@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:instaclone/screens/home_screen.dart';
+import 'package:instaclone/di/providers.dart';
+import 'package:instaclone/view/screens/home_screen.dart';
 import 'package:instaclone/style.dart';
+import 'package:instaclone/view/screens/login_screen.dart';
+import 'package:instaclone/view_models/login_view_model.dart';
+import 'package:provider/provider.dart';
 
 import 'generated/l10n.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    MultiProvider(
+      providers: globalProviders,
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final loginViewModel = Provider.of<LoginViewModel>(context,listen: false);
+    //listen:falseの場合は final loginViewModel =context.read();でも良い
+
     return MaterialApp(
       title: "DaitaInstagram",
       debugShowCheckedModeBanner: false,
@@ -31,8 +45,19 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: RegularFont,
       ),
-      //TODO
-      home:HomeScreen(),
+
+      home:FutureBuilder(
+        future: loginViewModel.isSignIn(),
+        //AsyncSnapshotは返ってくるデータ
+        builder: (context, AsyncSnapshot<bool> snapshot ){
+          //データがあって且つtrue(snapshot.dataところ)の場合
+          if(snapshot.hasData&&snapshot.data){
+            return HomeScreen();
+          }else{
+            return LoginScreen();
+          }
+        },
+      ),
     );
   }
 }

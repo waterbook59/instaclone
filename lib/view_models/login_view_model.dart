@@ -3,8 +3,10 @@ import 'package:instaclone/models/repositories/user_repository.dart';
 
 class LoginViewModel extends ChangeNotifier{
   final UserRepository userRepository;
-
   LoginViewModel({this.userRepository});
 
+  Future<bool> isSignIn() async {
+    return await userRepository.isSignIn();
+  }
 
 }
