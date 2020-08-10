@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:instaclone/di/providers.dart';
-import 'package:instaclone/view/screens/home_screen.dart';
+import 'package:instaclone/view/home_screen.dart';
 import 'package:instaclone/style.dart';
-import 'package:instaclone/view/screens/login_screen.dart';
+import 'package:instaclone/view/login/screens/login_screen.dart';
 import 'package:instaclone/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 
