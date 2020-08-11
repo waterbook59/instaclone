@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/style.dart';
 import 'package:instaclone/view/common/components/button_with_icon.dart';
+import 'package:instaclone/view_models/login_view_model.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -29,7 +31,9 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  login(BuildContext context) {
+  login(BuildContext context) async{
+    final loginVieModel = Provider.of<LoginViewModel>(context,listen: false);
+    await loginVieModel.signIn();
     //todo
   }
 }
