@@ -1,10 +1,17 @@
+//postRepositoryはdbManagerとlocationManagerの２つに依存する(ProxyProvider2)
+
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:instaclone/models/db/database_manager.dart';
+import 'package:instaclone/models/location/location_manager.dart';
 import 'package:instaclone/utils/constants.dart';
 
 class PostRepository{
-  //todo コンストラクタ
+  final DatabaseManager dbManager;
+  final LocationManager locationManager;
+
+  PostRepository({this.dbManager, this.locationManager});
 
  Future<File> pickImage(UploadType uploadType) async{
   final imagePicker = ImagePicker();
