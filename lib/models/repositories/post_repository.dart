@@ -1,8 +1,11 @@
 //postRepositoryはdbManagerとlocationManagerの２つに依存する(ProxyProvider2)
 
+import 'dart:async';
 import 'dart:io';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instaclone/data_models/location.dart';
 import 'package:instaclone/models/db/database_manager.dart';
 import 'package:instaclone/models/location/location_manager.dart';
 import 'package:instaclone/utils/constants.dart';
@@ -25,6 +28,27 @@ class PostRepository{
   }
 
 
+  }
+
+  Future<Location>getCurrentLocation() async{
+   //disiredAccuracyは情報の精度
+  final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+  final placeMarks =await Geolocator().placemarkFromPosition(position);
+  final placeMark =placeMarks.first;
+  return Future.value(convert(placeMark));
+  //asyncついてればFuture.valueじゃなくても良いかも？？
+  //  return convert(placeMark);
+  }
+
+  //convert自体は非同期出なくて良いのでFutureOrではない
+  Location convert(Placemark placeMark) {
+   return Location(
+     latitude: placeMark.position.latitude,
+     longitude: placeMark.position.longitude,
+     country: placeMark.country,
+     state: placeMark.administrativeArea,
+     city: placeMark.locality,
+   );
   }
 
 }
