@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io';//File型を使うためのimport
 
 import 'package:flutter/material.dart';
 import 'package:instaclone/data_models/location.dart';
