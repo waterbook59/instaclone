@@ -17,6 +17,8 @@ class PostViewModel extends ChangeNotifier{
   Location location;
   String locationString ="";
 
+  String caption ="";
+
   bool isProcessing = false;//isLoadingと同じ
   bool isImagePicked = false;
 

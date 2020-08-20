@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:instaclone/utils/constants.dart';
+import 'package:instaclone/view/post/components/post_caption_input_text_field.dart';
 import 'package:instaclone/view/post/screens/enlarge_image_screen.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ class PostCaptionPart extends StatelessWidget {
           onTap: () => _displayLargeImage(context, getImage),
         ),
         //todo
-//        title: PostCationInputTextField(),
+        title: PostCaptionInputTextField(),
       );
     } else {
       //todo

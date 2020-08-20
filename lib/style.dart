@@ -8,3 +8,5 @@ const BoldFont = "NotoSansJP_Bold";
 //CSS的にfontに間することはここで設定する(viewではここから挿入するだけ)
 //Login
 const loginTitleTextStyle = TextStyle(fontFamily: TitleFont, fontSize: 48.0);
+
+const postCaptionTextStyle= TextStyle(fontFamily: RegularFont,fontSize: 18.0);
