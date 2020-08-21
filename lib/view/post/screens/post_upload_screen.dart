@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/utils/constants.dart';
 import 'package:instaclone/view/post/components/post_caption_part.dart';
+import 'package:instaclone/view/post/components/post_location_part.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -52,11 +53,9 @@ class PostUploadScreen extends StatelessWidget {
                 ? Column(
                     children: <Widget>[
                       Divider(),
-                      //todo
                       PostCaptionPart(from: PostCaptionOpenMode.FROM_POST,),
                       Divider(),
-                      //todo
-                      //PostLocationPart(),
+                      PostLocationPart(),
                       Divider(),
                     ],
                   )
