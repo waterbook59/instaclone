@@ -24,7 +24,9 @@ class PostRepository{
     return File(pickedImage.path);
 //    return File((await imagePicker.getImage(source:ImageSource.gallery)).path);
   }else{
-    return File((await imagePicker.getImage(source:ImageSource.camera)).path);
+    //return File((await imagePicker.getImage(source:ImageSource.camera)).path);
+    final pickedImage  =await imagePicker.getImage(source: ImageSource.camera);
+    return File(pickedImage.path);
   }
 
 

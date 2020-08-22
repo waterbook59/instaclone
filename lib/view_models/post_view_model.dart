@@ -18,7 +18,7 @@ class PostViewModel extends ChangeNotifier{
   String locationString ="";
 
   String caption ="";
-
+ //グリグリと画像取ってこれたかを初期設定
   bool isProcessing = false;//isLoadingと同じ
   bool isImagePicked = false;
 
