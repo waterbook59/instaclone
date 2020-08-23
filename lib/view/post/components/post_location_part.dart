@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instaclone/data_models/location.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/style.dart';
+import 'package:instaclone/view/post/screens/map_screen.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -20,11 +21,10 @@ class PostLocationPart extends StatelessWidget {
       trailing: IconButton(
         icon: FaIcon(FontAwesomeIcons.mapMarkerAlt),
         //todo
-        onPressed: null,
+        onPressed: () => _openMapScreen(context, postViewModel.location),
       ),
     );
   }
-
 
   _latLngPart(Location location, BuildContext context) {
     const spaceWidth = 8.0;
@@ -36,15 +36,28 @@ class PostLocationPart extends StatelessWidget {
         Chip(
           label: Text(S.of(context).latitude),
         ),
-        SizedBox(width: spaceWidth,),
+        SizedBox(
+          width: spaceWidth,
+        ),
         //小数点第２位までだけ表示したい=>toStringAsFixed
         Text(location.latitude.toStringAsFixed(2)),
-        SizedBox(width: spaceWidth,),
+        SizedBox(
+          width: spaceWidth,
+        ),
         Chip(
           label: Text(S.of(context).longitude),
         ),
         Text(location.longitude.toStringAsFixed(2)),
       ],
     );
+  }
+
+  _openMapScreen(BuildContext context, Location location) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => MapScreen(
+                  location: location,
+                )));
   }
 }
