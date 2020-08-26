@@ -13,10 +13,10 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  //todo chapter83 3:40~
   LatLng _latLng;
   CameraPosition _cameraPosition;
   GoogleMapController _mapController;
+  Map<MarkerId,Marker>_markers=<MarkerId,Marker>{};
 
   @override
   void initState() {
@@ -39,11 +39,34 @@ class _MapScreenState extends State<MapScreen> {
       body: GoogleMap(
         initialCameraPosition: _cameraPosition,
         onMapCreated: onMapCreated,//メソッド参照の書き方
+        onTap: onMapTapped,
+        markers: Set<Marker>.of(_markers.values),
       ),
     );
   }
 
   void onMapCreated(GoogleMapController controller) {
     _mapController =controller;
+  }
+
+  void onMapTapped(LatLng latLng) {
+    _latLng =latLng;
+    _createMarker(_latLng);
+  }
+
+  void _createMarker(LatLng latLng) {
+
+    final markerId = MarkerId("Selected");
+    //上でつけたmarkerIdを元にmarker作成
+    final marker = Marker(markerId: markerId, position: latLng);
+    setState(() {
+      //MapにMarkerId("Selected")のkey名で格納
+      //_markers = ["Selected":latLng,key:value]みたいな感じ
+      _markers[markerId] = marker;
+
+    });
+
+
+
   }
 }
