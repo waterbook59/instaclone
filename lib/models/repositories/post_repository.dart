@@ -32,25 +32,35 @@ class PostRepository{
 
   }
 
-  Future<Location>getCurrentLocation() async{
-   //disiredAccuracyは情報の精度
-  final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
-  final placeMarks =await Geolocator().placemarkFromPosition(position);
-  final placeMark =placeMarks.first;
-  return Future.value(convert(placeMark));
-  //asyncついてればFuture.valueじゃなくても良いかも？？
-  //  return convert(placeMark);
+  Future<Location> getCurrentLocation()async{
+    return await locationManager.getCurrentLocation();
   }
 
+
+  //todo getCurrentLocationをlocationManagerのメソッドにすること
+//  Future<Location> getCurrentLocation() async{
+//   //disiredAccuracyは情報の精度
+//  final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+//  final placeMarks =await Geolocator().placemarkFromPosition(position);
+//  final placeMark =placeMarks.first;
+//  return Future.value(convert(placeMark));
+//  //asyncついてればFuture.valueじゃなくても良いかも？？
+//  //  return convert(placeMark);
+//  }
+
   //convert自体は非同期出なくて良いのでFutureOrではない
-  Location convert(Placemark placeMark) {
-   return Location(
-     latitude: placeMark.position.latitude,
-     longitude: placeMark.position.longitude,
-     country: placeMark.country,
-     state: placeMark.administrativeArea,
-     city: placeMark.locality,
-   );
+//  Location convert(Placemark placeMark) {
+//   return Location(
+//     latitude: placeMark.position.latitude,
+//     longitude: placeMark.position.longitude,
+//     country: placeMark.country,
+//     state: placeMark.administrativeArea,
+//     city: placeMark.locality,
+//   );
+//  }
+
+  Future<Location> updateLocation(double latitude, double longitude) async{
+   return await locationManager.updateLocation(latitude,longitude);
   }
 
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:instaclone/data_models/location.dart';
 import 'package:instaclone/generated/l10n.dart';
+import 'package:instaclone/view_models/post_view_model.dart';
+import 'package:provider/provider.dart';
 
 class MapScreen extends StatefulWidget {
   //Locationは自分で使ったやつ
@@ -33,7 +35,7 @@ class _MapScreenState extends State<MapScreen> {
         actions: <Widget>[IconButton(
           icon: Icon(Icons.done),
           //todo
-          onPressed: null,
+          onPressed: ()=>_onPlaceSelected(),
         ),],
       ),
       body: GoogleMap(
@@ -68,5 +70,12 @@ class _MapScreenState extends State<MapScreen> {
 
 
 
+  }
+
+  _onPlaceSelected() async{
+    final postViewModel = Provider.of<PostViewModel>(context,listen: false);
+    await postViewModel.updateLocation(_latLng.latitude,_latLng.longitude);
+    //地図のupdateが終わったらmapscreen閉じる
+    Navigator.pop(context);
   }
 }
