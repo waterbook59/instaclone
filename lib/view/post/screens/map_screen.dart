@@ -5,6 +5,8 @@ import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
 
+
+
 class MapScreen extends StatefulWidget {
   //Locationは自分で使ったやつ
   final Location location;
@@ -34,13 +36,14 @@ class _MapScreenState extends State<MapScreen> {
         title: Text(S.of(context).selectPlace),
         actions: <Widget>[IconButton(
           icon: Icon(Icons.done),
-          //todo
+          //選択した位置情報をviewModel側へ投げて取得
           onPressed: ()=>_onPlaceSelected(),
         ),],
       ),
       body: GoogleMap(
         initialCameraPosition: _cameraPosition,
         onMapCreated: onMapCreated,//メソッド参照の書き方
+        //地図をタップするとlatLngが得られる
         onTap: onMapTapped,
         markers: Set<Marker>.of(_markers.values),
       ),

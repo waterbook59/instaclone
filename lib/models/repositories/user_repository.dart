@@ -8,7 +8,7 @@ class UserRepository{
   final DatabaseManager dbManager;
   UserRepository({this.dbManager});
 
-  //取得したDBからのデータをUseRepositoryのインスタンスを経由せずにrアプリ全体で使えるようにstaticとしてcurrentUserに格納
+  //取得したDBからのデータをUseRepositoryのインスタンスを経由せずにアプリ全体で使えるようにstaticとしてcurrentUserに格納
   static User currentUser;
 
   //firebase authを使うためのインスタンス、staticのメソッドでインスタンス取れる

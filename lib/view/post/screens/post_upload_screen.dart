@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/utils/constants.dart';
+import 'package:instaclone/view/common/dialog/confirm_dialog.dart';
 import 'package:instaclone/view/post/components/post_caption_part.dart';
 import 'package:instaclone/view/post/components/post_location_part.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
@@ -40,8 +41,20 @@ class PostUploadScreen extends StatelessWidget {
                   )
                 : IconButton(
                     icon: Icon(Icons.done),
-                    //todo ダイアログ出して投稿処理
-                    onPressed: null,
+                    //ダイアログ出して投稿処理
+                    //メソッド参照使わないときは()=>必須！！！
+                    onPressed: ()=>showConfirmDialog(
+                        context: context,
+                        title: S.of(context).post,
+                        content: S.of(context).postConfirm,
+                        //onConfirmedがValueChange型なので外に出した関数からisConfirmedにtrue,falseが入ってくる
+                        onConfirmed: (isConfirmed){
+                        if(isConfirmed){
+                          _post(context);
+                        }else{
+
+                        }
+                        }),
                   )
           ],
         ),
@@ -53,7 +66,9 @@ class PostUploadScreen extends StatelessWidget {
                 ? Column(
                     children: <Widget>[
                       Divider(),
-                      PostCaptionPart(from: PostCaptionOpenMode.FROM_POST,),
+                      PostCaptionPart(
+                        from: PostCaptionOpenMode.FROM_POST,
+                      ),
                       Divider(),
                       PostLocationPart(),
                       Divider(),
@@ -66,6 +81,14 @@ class PostUploadScreen extends StatelessWidget {
 
   //todo
   _cancelPost(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void _post(BuildContext context) async{
+    print("PostUploadScreen#_post invoked");
+    final postViewModel = Provider.of<PostViewModel>(context,listen: false);
+    //投稿する中身はpostVieModelがfieldで持ってるので呼び出すだけ
+    await postViewModel.post();
     Navigator.pop(context);
   }
 }

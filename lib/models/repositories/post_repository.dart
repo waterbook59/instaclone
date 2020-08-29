@@ -6,36 +6,36 @@ import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instaclone/data_models/location.dart';
+import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/models/db/database_manager.dart';
 import 'package:instaclone/models/location/location_manager.dart';
 import 'package:instaclone/utils/constants.dart';
 
-class PostRepository{
+class PostRepository {
   final DatabaseManager dbManager;
   final LocationManager locationManager;
 
   PostRepository({this.dbManager, this.locationManager});
 
- Future<File> pickImage(UploadType uploadType) async{
-  final imagePicker = ImagePicker();
+  Future<File> pickImage(UploadType uploadType) async {
+    final imagePicker = ImagePicker();
 
-  if(uploadType == UploadType.GALLERY){
-    final pickedImage  =await imagePicker.getImage(source: ImageSource.gallery);
-    return File(pickedImage.path);
+    if (uploadType == UploadType.GALLERY) {
+      final pickedImage =
+          await imagePicker.getImage(source: ImageSource.gallery);
+      return File(pickedImage.path);
 //    return File((await imagePicker.getImage(source:ImageSource.gallery)).path);
-  }else{
-    //return File((await imagePicker.getImage(source:ImageSource.camera)).path);
-    final pickedImage  =await imagePicker.getImage(source: ImageSource.camera);
-    return File(pickedImage.path);
+    } else {
+      //return File((await imagePicker.getImage(source:ImageSource.camera)).path);
+      final pickedImage =
+          await imagePicker.getImage(source: ImageSource.camera);
+      return File(pickedImage.path);
+    }
   }
 
-
-  }
-
-  Future<Location> getCurrentLocation()async{
+  Future<Location> getCurrentLocation() async {
     return await locationManager.getCurrentLocation();
   }
-
 
   //todo getCurrentLocationをlocationManagerのメソッドにすること
 //  Future<Location> getCurrentLocation() async{
@@ -59,8 +59,13 @@ class PostRepository{
 //   );
 //  }
 
-  Future<Location> updateLocation(double latitude, double longitude) async{
-   return await locationManager.updateLocation(latitude,longitude);
+  Future<Location> updateLocation(double latitude, double longitude) async {
+    return await locationManager.updateLocation(latitude, longitude);
   }
 
+  //投稿するだけなので戻り値void
+  Future<void> post(User currentUser, File imageFile, String caption,
+      Location location, String locationString) async{
+    //todo
+  }
 }
