@@ -10,6 +10,7 @@ import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/models/db/database_manager.dart';
 import 'package:instaclone/models/location/location_manager.dart';
 import 'package:instaclone/utils/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class PostRepository {
   final DatabaseManager dbManager;
@@ -66,6 +67,10 @@ class PostRepository {
   //投稿するだけなので戻り値void
   Future<void> post(User currentUser, File imageFile, String caption,
       Location location, String locationString) async{
-    //todo
+    //一意のId設定
+    final storageId = Uuid().v1();
+    //最終的にstorageに画像アップしてstorage内の場所のurl(imageUrl)を取ってくる
+    final imageUrl =await dbManager.uploadImageToStorage(imageFile,storageId);
+    print('storageImageUrl:$imageUrl');
   }
 }

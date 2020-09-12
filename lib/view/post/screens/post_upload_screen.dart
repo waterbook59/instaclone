@@ -34,7 +34,8 @@ class PostUploadScreen extends StatelessWidget {
               ? Text(S.of(context).underProcessing)
               : Text(S.of(context).post),
           actions: <Widget>[
-            (model.isProcessing || model.isImagePicked)
+            //処理中あるいは画像を取ってこれない時はxボタン、それ以外は投稿
+            (model.isProcessing || !model.isImagePicked)
                 ? IconButton(
                     icon: Icon(Icons.close),
                     onPressed: () => _cancelPost(context),

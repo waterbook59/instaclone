@@ -60,7 +60,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _createMarker(LatLng latLng) {
-
+    //MarkerId('名前')の名前は自由に自分でつける
     final markerId = MarkerId("Selected");
     //上でつけたmarkerIdを元にmarker作成
     final marker = Marker(markerId: markerId, position: latLng);
