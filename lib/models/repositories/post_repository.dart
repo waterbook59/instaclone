@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instaclone/data_models/location.dart';
+import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/models/db/database_manager.dart';
 import 'package:instaclone/models/location/location_manager.dart';
@@ -23,13 +24,13 @@ class PostRepository {
 
     if (uploadType == UploadType.GALLERY) {
       final pickedImage =
-          await imagePicker.getImage(source: ImageSource.gallery);
+      await imagePicker.getImage(source: ImageSource.gallery);
       return File(pickedImage.path);
 //    return File((await imagePicker.getImage(source:ImageSource.gallery)).path);
     } else {
       //return File((await imagePicker.getImage(source:ImageSource.camera)).path);
       final pickedImage =
-          await imagePicker.getImage(source: ImageSource.camera);
+      await imagePicker.getImage(source: ImageSource.camera);
       return File(pickedImage.path);
     }
   }
@@ -66,11 +67,23 @@ class PostRepository {
 
   //投稿するだけなので戻り値void
   Future<void> post(User currentUser, File imageFile, String caption,
-      Location location, String locationString) async{
+      Location location, String locationString) async {
     //一意のId設定
     final storageId = Uuid().v1();
     //最終的にstorageに画像アップしてstorage内の場所のurl(imageUrl)を取ってくる
-    final imageUrl =await dbManager.uploadImageToStorage(imageFile,storageId);
+    final imageUrl = await dbManager.uploadImageToStorage(imageFile, storageId);
     print('storageImageUrl:$imageUrl');
+    final post = Post(postId: Uuid().v1(),
+        userId: currentUser.userId,
+        imageUrl: imageUrl,
+        imageStoragePath: storageId,
+        caption: caption,
+        locationString: locationString,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        postDatetime: DateTime.now(),
+    );
+    await dbManager.insertPost(post);
+
   }
 }

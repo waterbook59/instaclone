@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
 
 class DatabaseManager {
@@ -49,5 +50,12 @@ class DatabaseManager {
     //アップロードが終わったらファイルのダウンロードurl取得
     //getDownloadURL()がFuture<dynamic>なのでもう一つawait
     return await (await uploadTask.onComplete).ref.getDownloadURL();
+  }
+
+
+  Future<void> insertPost(Post post) async{
+    //chapter93 cloud_firestore 0.14.0以降なら対応(document=>doc,setData=>set)
+    //await  _db.collection('posts').doc(post.postId).set(post.toMap());
+    await _db.collection('posts').document(post.postId).setData(post.toMap());
   }
 }
