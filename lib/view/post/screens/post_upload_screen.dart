@@ -14,6 +14,8 @@ class PostUploadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    //postUploadScreenが開いた時に画像を取ってくる listen:faluseで投げてConsumerでそれを受ける形
     final postViewModel = Provider.of<PostViewModel>(context, listen: false);
     if (!postViewModel.isImagePicked && !postViewModel.isProcessing) {
       //画像を取ってきてない場合かつ処理中でない場合だけ取ってくる

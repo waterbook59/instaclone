@@ -58,4 +58,52 @@ class DatabaseManager {
     //await  _db.collection('posts').doc(post.postId).set(post.toMap());
     await _db.collection('posts').document(post.postId).setData(post.toMap());
   }
+
+  Future<List<Post>> getPostsMineAndFollowings(String userId) async{
+    //firebaseにデータがない状態でデータ取るとアプリ落ちる
+    //データの有無を判定
+    //chapter97 cloud_firestore 0.14.0以降なら対応(.getDocuments()=>.get(),.documents=>.docs)
+    final query = await _db.collection('posts').getDocuments();
+    //firebaseにデータ空のときは空のList返す
+    if(query.documents.length == 0)return List();
+
+    //自分がフォローしてるユーザー
+    var userIds = await getFollowingUserIds(userId);
+    //自分がフォローしてるユーザーに自分を加える
+    userIds.add(userId);
+
+    var results = List<Post>();
+//chapter99 検索条件複数ある場合の書き方(userIdとpostDateTimeのfield２つ使ってるので複合インデックス),新しいものから降順
+    //postsの中からidが自分＋フォローユーザーであるidのリスト(userIds)を取ってきて、postDateTime降順に並び替え、
+    //うまくいったらvalueがDocumentSnapshotであり、value.documentsがList<DocumentSnapshot>なのでforEachして
+    //1行分のelementがMap型(json型)になってるので、モデルクラス型へ変換しresultsへ格納
+    await _db.collection('posts').where('userId',whereIn: userIds).orderBy('postDateTime',
+        descending: true).getDocuments().then((value) {
+        value.documents.forEach((element) { 
+          results.add(Post.fromMap(element.data));//Post.fromMapはJson型(element.data)をモデルクラスへ変換
+        });
+        });
+    print('posts:$results');
+    return results;
+
+  }
+
+  //todo プロフィールの時
+  Future<List<Post>> getPostByUser(String userId) {}
+
+  //自分がフォローしているユーザーを取ってくる
+  Future<List<String>>getFollowingUserIds(String userId) async{
+    //chapter98 cloud_firestore 0.14.0以降なら対応(.documents=>.docs)
+    //document(xx).get() xxで指定してドキュメント取得
+    final query = await _db.collection('users').document(userId).collection('followings').getDocuments();
+    if(query.documents.length ==0) return List();
+
+    var userIds = List<String>();
+    query.documents.forEach((id) {
+      //cloud_firestore 0.14.0以降なら対応(.data=>.data())
+      //userIds.add(id.data()['userId']);
+      userIds.add(id.data['userId']);//userIdがキー
+    });
+    return userIds;
+  }
 }

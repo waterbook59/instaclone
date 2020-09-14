@@ -25,6 +25,7 @@ class PostRepository {
     if (uploadType == UploadType.GALLERY) {
       final pickedImage =
       await imagePicker.getImage(source: ImageSource.gallery);
+      //imagePickerで返ってくる型はPickedFile
       return File(pickedImage.path);
 //    return File((await imagePicker.getImage(source:ImageSource.gallery)).path);
     } else {
@@ -85,5 +86,17 @@ class PostRepository {
     );
     await dbManager.insertPost(post);
 
+  }
+
+  //どのユーザー情報を取ってくるかをviewModelからもらっておく
+  Future<List<Post>>getPosts(FeedMode feedMode ,User feedUser) async{
+    if(feedMode ==FeedMode.FROM_FEED){
+      // 自分＋フォローしているユーザー
+      return dbManager.getPostsMineAndFollowings(feedUser.userId);
+    }
+    if(feedMode == FeedMode.FROM_PROFILE){
+      //todo  プロフィール画面に表示されているユーザーのみ(自分とは限らない)
+//      return dbManager.getPostByUser(feedUser.userId)
+    }
   }
 }

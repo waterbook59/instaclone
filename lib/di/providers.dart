@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:instaclone/models/db/database_manager.dart';
 import 'package:instaclone/models/location/location_manager.dart';
 import 'package:instaclone/models/repositories/post_repository.dart';
 import 'package:instaclone/models/repositories/user_repository.dart';
+import 'package:instaclone/view_models/feed_view_model.dart';
 import 'package:instaclone/view_models/login_view_model.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
@@ -47,4 +49,10 @@ List<SingleChildWidget> viewModels =[
       postRepository: Provider.of<PostRepository>(context,listen:false),
     ),
   ),
+  ChangeNotifierProvider<FeedViewModel>(
+    create: (context)=>FeedViewModel(
+      userRepository:Provider.of<UserRepository>(context,listen:false),
+      postRepository: Provider.of<PostRepository>(context,listen:false),
+    ),
+  )
 ];
