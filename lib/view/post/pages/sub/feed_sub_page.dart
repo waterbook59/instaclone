@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/utils/constants.dart';
+import 'package:instaclone/view/feed/components/feed_posts_tile.dart';
 import 'package:instaclone/view_models/feed_view_model.dart';
 import 'package:provider/provider.dart';
 
 class FeedSubPage extends StatelessWidget {
   final FeedMode feedMode;
+
   FeedSubPage({@required this.feedMode});
 
   @override
@@ -13,12 +15,22 @@ class FeedSubPage extends StatelessWidget {
     //todo プロフィール画面からきた場合はユーザーの設定変更
     feedViewModel.setFeedUser(feedMode, null);
 
-    Future(()=>feedViewModel.getPosts(feedMode));
+    Future(() => feedViewModel.getPosts(feedMode));
 
-    return Scaffold(
-      body: Center(
-        child: Text("FeedSubPage"),
-      ),
-    );
+    return Consumer<FeedViewModel>(builder: (context, model, child) {
+      if (model.isProcessing) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        return ListView.builder(
+          itemCount: model.posts.length,
+            itemBuilder: (context,index){
+            return FeedPostTile(
+              feedMode:feedMode,post:model.posts[index]
+            );
+            });
+      }
+    },);
   }
 }

@@ -77,7 +77,7 @@ class DatabaseManager {
     //postsの中からidが自分＋フォローユーザーであるidのリスト(userIds)を取ってきて、postDateTime降順に並び替え、
     //うまくいったらvalueがDocumentSnapshotであり、value.documentsがList<DocumentSnapshot>なのでforEachして
     //1行分のelementがMap型(json型)になってるので、モデルクラス型へ変換しresultsへ格納
-    await _db.collection('posts').where('userId',whereIn: userIds).orderBy('postDateTime',
+    await _db.collection('posts').where('userId',whereIn: userIds).orderBy('postDatetime',
         descending: true).getDocuments().then((value) {
         value.documents.forEach((element) { 
           results.add(Post.fromMap(element.data));//Post.fromMapはJson型(element.data)をモデルクラスへ変換

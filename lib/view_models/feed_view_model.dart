@@ -12,7 +12,7 @@ class FeedViewModel extends ChangeNotifier{
   FeedViewModel({this.userRepository,this.postRepository});
 
   bool isProcessing = false;
-  List<Post> _posts=<Post>[];
+  List<Post> posts=<Post>[];
   User feedUser;//どのユーザーを表示するかのユーザー情報
   User get currentUser => UserRepository.currentUser;//ログインしているユーザー(UserRepositoryのstaticプロパティ)
 
@@ -30,7 +30,7 @@ class FeedViewModel extends ChangeNotifier{
     notifyListeners();
 
     //userRepoじゃなくてpostRepositoryから
-   _posts = await postRepository.getPosts(feedMode,feedUser);
+   posts = await postRepository.getPosts(feedMode,feedUser);
   //データが取れたらグリグリ消す
   isProcessing =false;
   notifyListeners();
