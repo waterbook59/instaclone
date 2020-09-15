@@ -19,7 +19,7 @@ class UserCard extends StatelessWidget {
       onTap: onTap,
       child: ListTile(
         leading: CirclePhoto(
-          photoUrl: photoUrl, radius: 8, isImageFromFile: false,),
+          photoUrl: photoUrl,  isImageFromFile: false,),
         title: Text(title,style: userCardTitleTextStyle,),
         subtitle: Text(subtitle,style: userCardSubTitleTextStyle,),
         trailing:trailing,

@@ -33,12 +33,17 @@ class FeedPostTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start, //上寄せ
               crossAxisAlignment: CrossAxisAlignment.stretch, //端まで伸ばす,
               children: <Widget>[
-                FeedPostHeaderPart(),
+                FeedPostHeaderPart(
+                  currentUser: currentUser,
+                  post: post,
+                  postUser: postUser,
+                ),
                 ImageFromUrl(
                   imageUrl: post.imageUrl,
                 ),
                 FeedPostLikesPart(),
-                FeedPostCommentsPart(),
+                SizedBox(height: 3,),
+                FeedPostCommentsPart(postUser: postUser,post: post,),
               ],
             );
           }else{
