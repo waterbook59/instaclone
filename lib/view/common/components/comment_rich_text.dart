@@ -11,18 +11,27 @@ class CommentRichText extends StatefulWidget {
 }
 
 class _CommentRichTextState extends State<CommentRichText> {
+  int _maxLines = 2;
+
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-      text: TextSpan(
-        style: DefaultTextStyle.of(context).style,
-        children: [
-          TextSpan(text: widget.name,style: commentNameTextStyle),
-          TextSpan(text: ' '),
-          TextSpan(text: widget.text,style: commentContentTextStyle),
-        ]
+    return GestureDetector(//Tapすると隠れてるやつ出てくる
+      onTap: (){
+        setState(() {
+          _maxLines = 100;
+        });
+      },
+      child: RichText(
+        maxLines: _maxLines,
+        overflow: TextOverflow.ellipsis,
+        text: TextSpan(
+          style: DefaultTextStyle.of(context).style,
+          children: [
+            TextSpan(text: widget.name,style: commentNameTextStyle),
+            TextSpan(text: ' '),
+            TextSpan(text: widget.text,style: commentContentTextStyle),
+          ]
+        ),
       ),
     );
   }

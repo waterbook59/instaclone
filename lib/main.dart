@@ -8,8 +8,13 @@ import 'package:instaclone/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'generated/l10n.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
+
 
 void main() {
+
+  timeAgo.setLocaleMessages('ja', timeAgo.JaMessages());
+  
   runApp(
     MultiProvider(
       providers: globalProviders,
