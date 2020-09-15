@@ -12,3 +12,7 @@ const loginTitleTextStyle = TextStyle(fontFamily: TitleFont, fontSize: 48.0);
 //Post
 const postCaptionTextStyle= TextStyle(fontFamily: RegularFont,fontSize: 18.0);
 const postLocationTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 16.0);
+
+//Feed
+const userCardTitleTextStyle = TextStyle(fontFamily: BoldFont,fontSize: 14.0);
+const userCardSubTitleTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 12.0);

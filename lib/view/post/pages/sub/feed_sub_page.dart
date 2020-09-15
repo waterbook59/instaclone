@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/utils/constants.dart';
-import 'package:instaclone/view/feed/components/feed_posts_tile.dart';
+import 'package:instaclone/view/feed/components/feed_post_tile.dart';
 import 'package:instaclone/view_models/feed_view_model.dart';
 import 'package:provider/provider.dart';
 
