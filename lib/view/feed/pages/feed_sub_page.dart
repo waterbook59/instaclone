@@ -27,7 +27,8 @@ class FeedSubPage extends StatelessWidget {
           itemCount: model.posts.length,
             itemBuilder: (context,index){
             return FeedPostTile(
-              feedMode:feedMode,post:model.posts[index]
+              feedMode:feedMode,
+              post:model.posts[index],
             );
             });
       }

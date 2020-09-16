@@ -106,4 +106,10 @@ class DatabaseManager {
     });
     return userIds;
   }
+
+
+  Future<void> updatePost(Post updatePost) async{
+    final reference = _db.collection('posts').document(updatePost.postId);
+    await reference.updateData(updatePost.toMap());
+  }
 }

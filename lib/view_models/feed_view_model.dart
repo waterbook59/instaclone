@@ -40,4 +40,17 @@ class FeedViewModel extends ChangeNotifier{
   Future<User> getPostUserInfo(String userId) async{
     return await userRepository.getUserById(userId);
   }
+
+  Future<void> updatePost(Post post, FeedMode feedMode) async{
+    isProcessing = true;
+//    notifyListeners();
+    await postRepository.updatePost(
+      //dart data classを使ってpostの中のcaptionだけを変えて渡す
+      post.copyWith(caption: caption)
+    );
+    //更新後改めてデータ取得
+    await getPosts(feedMode);
+    isProcessing =false;
+    notifyListeners();
+  }
 }

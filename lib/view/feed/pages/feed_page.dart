@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/style.dart';
 import 'package:instaclone/utils/constants.dart';
-import 'package:instaclone/view/post/pages/sub/feed_sub_page.dart';
+import 'package:instaclone/view/feed/pages/feed_sub_page.dart';
 import 'package:instaclone/view/post/screens/post_upload_screen.dart';
 
 class FeedPage extends StatelessWidget {

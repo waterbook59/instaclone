@@ -69,6 +69,7 @@ class _PostCaptionInputTextFieldState extends State<PostCaptionInputTextField> {
   _onCationUpdated() {
     if(widget.from == PostCaptionOpenMode.FROM_FEED){//feedから編集の時
       final viewModel = Provider.of<FeedViewModel>(context, listen: false);
+      //viewModelのcaptionへview側のcontroller.textをセット
       viewModel.caption = _cationController.text;
       print('caption In FeedViewModel:${viewModel.caption}');
     }else{//postから投稿の時

@@ -99,4 +99,9 @@ class PostRepository {
 //      return dbManager.getPostByUser(feedUser.userId)
     }
   }
+
+  //updateした後、getPostするので戻り値はvoidで良い
+  Future<void> updatePost(Post updatePost) async{
+    return dbManager.updatePost(updatePost);
+  }
 }

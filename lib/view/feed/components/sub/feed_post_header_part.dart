@@ -5,6 +5,7 @@ import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/utils/constants.dart';
 import 'package:instaclone/view/common/components/user_card.dart';
 import 'package:instaclone/view/feed/screens/feed_post_edit_screen.dart';
+import 'package:share/share.dart';
 
 class FeedPostHeaderPart extends StatelessWidget {
   final User postUser;
@@ -61,7 +62,7 @@ class FeedPostHeaderPart extends StatelessWidget {
     );
   }
 
-  //todo 選んだら実行する
+  // 選んだら実行する
   _onPopupMenuSelected(BuildContext context, PostMenu selectedMenu) {
     switch (selectedMenu) {
       case PostMenu.EDIT:
@@ -71,7 +72,15 @@ class FeedPostHeaderPart extends StatelessWidget {
                 builder: (_) => FeedPostEditScreen(
                       post: post,
                       postUser: postUser,
-                    )));
+                      feedMode: feedMode,
+                    ),
+            ),
+        );
+        break;
+      case PostMenu.SHARE:
+        Share.share(post.imageUrl,subject: post.caption);
+        break;
+
     }
   }
 }
