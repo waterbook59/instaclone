@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/generated/l10n.dart';
+import 'package:instaclone/utils/constants.dart';
+import 'package:instaclone/view_models/feed_view_model.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../style.dart';
 
 class PostCaptionInputTextField extends StatefulWidget {
+  final String cationBeforeUpdated;
+  final PostCaptionOpenMode from;//modeによって参照するviewModelが異なるため
+
+  PostCaptionInputTextField({this.cationBeforeUpdated, this.from});
+
   @override
   _PostCaptionInputTextFieldState createState() =>
       _PostCaptionInputTextFieldState();
@@ -27,6 +34,10 @@ class _PostCaptionInputTextFieldState extends State<PostCaptionInputTextField> {
     });
     //メソッド参照的に書くなら
 //    _cationController.addListener(_onCationUpdated);
+  if(widget.from == PostCaptionOpenMode.FROM_FEED){
+    _cationController.text =widget.cationBeforeUpdated;
+  }
+
   }
 
   @override
@@ -56,8 +67,16 @@ class _PostCaptionInputTextFieldState extends State<PostCaptionInputTextField> {
   //TextEditionControllerが変更された時のハンドリング方法 step3
   // viewModelで設定したcation変数へ入力テキストをセット
   _onCationUpdated() {
-    final postViewModel = Provider.of<PostViewModel>(context, listen: false);
-    postViewModel.caption = _cationController.text;
-    print("caption:${postViewModel.caption}");
+    if(widget.from == PostCaptionOpenMode.FROM_FEED){//feedから編集の時
+      final viewModel = Provider.of<FeedViewModel>(context, listen: false);
+      viewModel.caption = _cationController.text;
+      print('caption In FeedViewModel:${viewModel.caption}');
+    }else{//postから投稿の時
+      final postViewModel = Provider.of<PostViewModel>(context, listen: false);
+      postViewModel.caption = _cationController.text;
+      print("caption:${postViewModel.caption}");
+    }
+
+
   }
 }

@@ -15,6 +15,7 @@ class FeedViewModel extends ChangeNotifier{
   List<Post> posts=<Post>[];
   User feedUser;//どのユーザーを表示するかのユーザー情報
   User get currentUser => UserRepository.currentUser;//ログインしているユーザー(UserRepositoryのstaticプロパティ)
+  String caption= '';//初期値空文字
 
   void setFeedUser(FeedMode feedMode, User user){
     if(feedMode == FeedMode.FROM_FEED){
