@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instaclone/data_models/comments.dart';
 import 'package:instaclone/data_models/location.dart';
 import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
@@ -103,5 +104,22 @@ class PostRepository {
   //updateした後、getPostするので戻り値はvoidで良い
   Future<void> updatePost(Post updatePost) async{
     return dbManager.updatePost(updatePost);
+  }
+
+  //コメント投稿
+  Future<void>postComment(Post post, User commentUser, String commentString) async{
+    final comment =Comment(
+      comment: commentString,
+      postId: post.postId,
+      commentDateTime: DateTime.now(),
+      commentId: Uuid().v1(),//任意のId自ら作りたいとき
+      commentUserId: commentUser.userId,
+    );
+    await dbManager.postComment(comment);
+  }
+
+  //postIdに紐づいたコメント取得(読み込みread)
+  Future<List<Comment>>getComments(String postId) async{
+    return dbManager.getComments(postId);
   }
 }

@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:instaclone/data_models/comments.dart';
 import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
 
@@ -16,10 +17,7 @@ class DatabaseManager {
 //cloudfirestoreの検索条件を指定して読み込む
   Future<bool> searchUserInDb(FirebaseUser firebaseUser) async {
     //usersというコレクションの中にあるuserIdがfirebaseUserのuidと同じ場合、ドキュメントを取ってくる
-    final query = await _db
-        .collection("users")
-        .where("userId", isEqualTo: firebaseUser.uid)
-        .getDocuments();
+    final query = await _db.collection("users").where("userId", isEqualTo: firebaseUser.uid).getDocuments();
     if (query.documents.length > 0) {
       return true;
     }
@@ -111,5 +109,27 @@ class DatabaseManager {
   Future<void> updatePost(Post updatePost) async{
     final reference = _db.collection('posts').document(updatePost.postId);
     await reference.updateData(updatePost.toMap());
+  }
+
+  //コメント投稿(commentsコレクション作って、自分で作ったidのところへCommnetをセット）
+  Future<void> postComment(Comment comment) async{
+    //documentの中のidは自分でuuidで作ったやつをいれる
+    await _db.collection('comments').document(comment.commentId).setData(comment.toMap());
+  }
+  //postIdに紐づいたコメント取得(読み込みread) 読み込む時はデータがあるかないかを判別して進める
+  Future<List<Comment>> getComments(String postId) async{
+    //commentsコレクションの中身を全部取る
+    final query = await _db.collection('comments').getDocuments();
+    if(query.documents.length == 0) return List();
+    var results = List<Comment>();
+    //where('コレクション内のプロパティ', isEqualTo:引数として持ってきた値）
+    await _db.collection('comments').where('postId',isEqualTo: postId).orderBy('commentDateTime').getDocuments()
+    .then((value) {//valueにgetDocumentsすなわちQuerySnapshotすなわちQuerySnapshot.documents=>List<DocumentSnapshot>が入ってくる
+      value.documents.forEach((element) { //elementはDocumentSnapshotでelement.dataとするとMap型になる
+        results.add(Comment.fromMap(element.data));//空のresultsに入れていく
+      });
+    });
+    //return resultsはawait=>thenが終わってから
+    return results;
   }
 }

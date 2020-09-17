@@ -30,7 +30,7 @@ class CommentScreen extends StatelessWidget {
               ),
               //todo コメント
               //コメント入力欄
-              CommentInputPart(),
+              CommentInputPart(post: post,),
             ],
           ),
         ));
