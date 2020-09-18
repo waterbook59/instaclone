@@ -32,6 +32,7 @@ class DatabaseManager {
   }
 
   Future<User> getUserInfoFromDbById(String userId) async {
+    //userIdに紐づくUserデータを取ってくる
     //検索条件を使ってデータ取ってくる、queryに格納してそれをmap化したものをfromMapでほぐす
     final query = await _db
         .collection("users")
@@ -131,5 +132,11 @@ class DatabaseManager {
     });
     //return resultsはawait=>thenが終わってから
     return results;
+  }
+
+  //コメント削除
+  Future<void> deleteComment(String deleteCommentId) async{
+    final reference =  _db.collection('comments').document(deleteCommentId);
+    await reference.delete();
   }
 }

@@ -4,6 +4,9 @@ import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/view/comments/components/comment_display_part.dart';
 import 'package:instaclone/view/comments/components/comment_input_part.dart';
+import 'package:instaclone/view/common/dialog/confirm_dialog.dart';
+import 'package:instaclone/view_models/comments_view_model.dart';
+import 'package:provider/provider.dart';
 
 class CommentScreen extends StatelessWidget {
   final Post post;
@@ -13,26 +16,85 @@ class CommentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final commentsViewModel =
+        Provider.of<CommentsViewModel>(context, listen: false);
+    Future(() => commentsViewModel.getComments(post.postId));
+
     return Scaffold(
         appBar: AppBar(
           title: Text(S.of(context).comments),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              //キャプション
-              CommentDisplayPart(
-                postUserPhotoUrl: postUser.photoUrl,
-                name: postUser.inAppUserName,
-                text: post.caption,
-                postDateTime: post.postDatetime,
-              ),
-              //todo コメント
-              //コメント入力欄
-              CommentInputPart(post: post,),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                //キャプション
+                CommentDisplayPart(
+                  postUserPhotoUrl: postUser.photoUrl,
+                  name: postUser.inAppUserName,
+                  text: post.caption,
+                  postDateTime: post.postDatetime,
+                ),
+                //投稿済みのコメント
+                Consumer<CommentsViewModel>(
+                  builder: (context, model, child) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: model.comments.length,
+                        itemBuilder: (context, index) {
+                          //一つ分切り出す
+                          final comment = model.comments[index];
+                          final commentUserId = comment.commentUserId;
+
+                          return FutureBuilder(
+                            future: model.getCommentUserInfo(commentUserId),
+                            //AsyncSnapshotで返ってくるのはgetCommentUserInfoの戻り値
+                            builder: (context, AsyncSnapshot<User> snapshot) {
+                              if (snapshot.hasData) {
+                                final commentUser = snapshot.data;
+                                return CommentDisplayPart(
+                                  name: commentUser.inAppUserName,
+                                  text: comment.comment,
+                                  postDateTime: comment.commentDateTime,
+                                  postUserPhotoUrl: commentUser.photoUrl,
+                                  onLongPressed: () => showConfirmDialog(
+                                      context: context,
+                                      title: S.of(context).deleteComment,
+                                      content: S.of(context).deleteCommentConfirm,
+                                      onConfirmed: (isConfirmed){
+                                        isConfirmed
+                                        ?_deleteComment(context,index)
+                                        :Container();
+                                      }
+                                  ),
+                                );
+                              } else {
+                                return Container();
+                              }
+                            },
+                          );
+                          ListTile(
+                            title: Text(comment.commentUserId),
+                            subtitle: Text(comment.comment),
+                          );
+                        });
+                  },
+                ),
+
+                //コメント入力欄
+                CommentInputPart(
+                  post: post,
+                ),
+              ],
+            ),
           ),
         ));
+  }
+
+  void _deleteComment(BuildContext context, int commentIndex) async{
+    final commentsViewModel =
+    Provider.of<CommentsViewModel>(context, listen: false);
+    await commentsViewModel.deleteComment(post,commentIndex);
   }
 }
