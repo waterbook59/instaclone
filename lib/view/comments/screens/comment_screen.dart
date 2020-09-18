@@ -63,6 +63,10 @@ class CommentScreen extends StatelessWidget {
                                       title: S.of(context).deleteComment,
                                       content: S.of(context).deleteCommentConfirm,
                                       onConfirmed: (isConfirmed){
+//                                        if(isConfirmed){
+//                                          _deleteComment(context,index);
+//                                        }
+
                                         isConfirmed
                                         ?_deleteComment(context,index)
                                         :Container();

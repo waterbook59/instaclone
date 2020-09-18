@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instaclone/data_models/comments.dart';
+import 'package:instaclone/data_models/like.dart';
 import 'package:instaclone/data_models/location.dart';
 import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
@@ -25,14 +26,14 @@ class PostRepository {
 
     if (uploadType == UploadType.GALLERY) {
       final pickedImage =
-      await imagePicker.getImage(source: ImageSource.gallery);
+          await imagePicker.getImage(source: ImageSource.gallery);
       //imagePickerで返ってくる型はPickedFile
       return File(pickedImage.path);
 //    return File((await imagePicker.getImage(source:ImageSource.gallery)).path);
     } else {
       //return File((await imagePicker.getImage(source:ImageSource.camera)).path);
       final pickedImage =
-      await imagePicker.getImage(source: ImageSource.camera);
+          await imagePicker.getImage(source: ImageSource.camera);
       return File(pickedImage.path);
     }
   }
@@ -75,55 +76,68 @@ class PostRepository {
     //最終的にstorageに画像アップしてstorage内の場所のurl(imageUrl)を取ってくる
     final imageUrl = await dbManager.uploadImageToStorage(imageFile, storageId);
     print('storageImageUrl:$imageUrl');
-    final post = Post(postId: Uuid().v1(),
-        userId: currentUser.userId,
-        imageUrl: imageUrl,
-        imageStoragePath: storageId,
-        caption: caption,
-        locationString: locationString,
-        latitude: location.latitude,
-        longitude: location.longitude,
-        postDatetime: DateTime.now(),
+    final post = Post(
+      postId: Uuid().v1(),
+      userId: currentUser.userId,
+      imageUrl: imageUrl,
+      imageStoragePath: storageId,
+      caption: caption,
+      locationString: locationString,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      postDatetime: DateTime.now(),
     );
     await dbManager.insertPost(post);
-
   }
 
   //どのユーザー情報を取ってくるかをviewModelからもらっておく
-  Future<List<Post>>getPosts(FeedMode feedMode ,User feedUser) async{
-    if(feedMode ==FeedMode.FROM_FEED){
+  Future<List<Post>> getPosts(FeedMode feedMode, User feedUser) async {
+    if (feedMode == FeedMode.FROM_FEED) {
       // 自分＋フォローしているユーザー
       return dbManager.getPostsMineAndFollowings(feedUser.userId);
     }
-    if(feedMode == FeedMode.FROM_PROFILE){
+    if (feedMode == FeedMode.FROM_PROFILE) {
       //todo  プロフィール画面に表示されているユーザーのみ(自分とは限らない)
 //      return dbManager.getPostByUser(feedUser.userId)
     }
   }
 
   //updateした後、getPostするので戻り値はvoidで良い
-  Future<void> updatePost(Post updatePost) async{
+  Future<void> updatePost(Post updatePost) async {
     return dbManager.updatePost(updatePost);
   }
 
   //コメント投稿
-  Future<void>postComment(Post post, User commentUser, String commentString) async{
-    final comment =Comment(
+  Future<void> postComment(
+      Post post, User commentUser, String commentString) async {
+    final comment = Comment(
       comment: commentString,
       postId: post.postId,
       commentDateTime: DateTime.now(),
-      commentId: Uuid().v1(),//任意のId自ら作りたいとき
+      commentId: Uuid().v1(),
+      //任意のId自ら作りたいとき
       commentUserId: commentUser.userId,
     );
     await dbManager.postComment(comment);
   }
 
   //postIdに紐づいたコメント取得(読み込みread)
-  Future<List<Comment>>getComments(String postId) async{
+  Future<List<Comment>> getComments(String postId) async {
     return dbManager.getComments(postId);
   }
 
-  Future<void> deleteComment(String deleteCommentId) async{
+  Future<void> deleteComment(String deleteCommentId) async {
     await dbManager.deleteComment(deleteCommentId);
+  }
+
+  //Like登録
+  Future<void> likeIt(Post post, User currentUser) async {
+    final like = Like(
+      likeUserId: currentUser.userId,
+      likeId: Uuid().v1(),
+      postId: post.postId,
+      likeDateTime: DateTime.now()
+    );
+    await dbManager.likeIt(like);
   }
 }

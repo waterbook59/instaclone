@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:instaclone/data_models/comments.dart';
+import 'package:instaclone/data_models/like.dart';
 import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
 
@@ -117,6 +118,7 @@ class DatabaseManager {
     //documentの中のidは自分でuuidで作ったやつをいれる
     await _db.collection('comments').document(comment.commentId).setData(comment.toMap());
   }
+
   //postIdに紐づいたコメント取得(読み込みread) 読み込む時はデータがあるかないかを判別して進める
   Future<List<Comment>> getComments(String postId) async{
     //commentsコレクションの中身を全部取る
@@ -138,5 +140,10 @@ class DatabaseManager {
   Future<void> deleteComment(String deleteCommentId) async{
     final reference =  _db.collection('comments').document(deleteCommentId);
     await reference.delete();
+  }
+
+  //likeを挿入 セット
+  Future<void> likeIt(Like like) async{
+    await _db.collection('likes').document(like.likeId).setData(like.toMap());
   }
 }
