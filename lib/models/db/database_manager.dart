@@ -123,6 +123,7 @@ class DatabaseManager {
   Future<List<Comment>> getComments(String postId) async{
     //commentsコレクションの中身を全部取る
     final query = await _db.collection('comments').getDocuments();
+    //まずデータがあるかどうか
     if(query.documents.length == 0) return List();
     var results = List<Comment>();
     //where('コレクション内のプロパティ', isEqualTo:引数として持ってきた値）
@@ -145,5 +146,19 @@ class DatabaseManager {
   //likeを挿入 セット
   Future<void> likeIt(Like like) async{
     await _db.collection('likes').document(like.likeId).setData(like.toMap());
+  }
+
+  //postIdに紐づくいいねのデータ取得
+  Future<List<Like>> getLikes(String postId) async{
+    final query = await _db.collection('likes').getDocuments();
+    if(query.documents.length == 0) return List();
+    var results = List<Like>();
+    await _db.collection('likes').where('postId',isEqualTo: postId).orderBy('likeDateTime').getDocuments()
+    .then((value) {
+      value.documents.forEach((element) {
+        results.add(Like.fromMap(element.data));
+      });
+    });
+    return results;
   }
 }

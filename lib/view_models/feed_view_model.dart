@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/data_models/comments.dart';
+import 'package:instaclone/data_models/like.dart';
 import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/models/repositories/post_repository.dart';
@@ -62,5 +63,10 @@ class FeedViewModel extends ChangeNotifier{
   Future<void> likeIt(Post post) async{
     await postRepository.likeIt(post,currentUser);
     notifyListeners();
+  }
+
+  Future<LikeResult> getLikeResult(String postId) async{
+    //自分がこの投稿(postIdに対していいねをしてるかを判別するのにcurrentUser渡す
+   return await postRepository.getLikeResult(postId,currentUser);
   }
 }
