@@ -161,4 +161,49 @@ class DatabaseManager {
     });
     return results;
   }
+
+  //「いいね」やめる(likes内のデータ削除)時、likeIdを直接指定できる形ではない
+  //まずdocumentのidを取得してからlikeIdで指定して削除(参考はコメント削除)
+  Future<void> unLikeIt(Post post, User currentUser) async{
+    //documentのid取得,postIdが同じかとlikeUserIdが自分かどうかで検索条件設定
+    final likeRef = await _db.collection('likes').where('postId',isEqualTo: post.postId)
+        .where('likeUserId',isEqualTo: currentUser.userId)
+        .getDocuments();
+    //likeRefは複数の可能性があるのでforEachで１つにバラして削除
+    likeRef.documents.forEach((element) async{
+      final ref = _db.collection('likes').document(element.documentID);
+      await ref.delete();
+    });
+
+  }
+
+  //投稿の削除（それに紐づくコメントやlikesやstorageも削除）
+  Future<void> deletePost(String postId, String imageStoragePath) async{
+    //Post
+    final postRef = _db.collection('posts').document(postId);
+    await postRef.delete();
+    //Comment
+       //postIdでcommentsドキュメント内の検索かけて、postIdが同じデータのcommentIdのものを消す
+    final commentsRef = await _db.collection('comments').where('postId',isEqualTo: postId).getDocuments();
+      //commentsRefにはpostIdが一致するコメントたちが複数リスト形式で入った状態=>forEachでほぐす
+    commentsRef.documents.forEach((element) async{
+      //elementは１行分のデータ(element.documentIDはcommentsコレクション直下のID)
+      final commentRef = _db.collection('comments').document(element.documentID);
+      await commentRef.delete();
+    });
+
+    //Likes
+    final likesRef = await _db.collection('likes').where('postId',isEqualTo: postId).getDocuments();
+    //commentsRefにはpostIdが一致するコメントたちが複数リスト形式で入った状態=>forEachでほぐす
+    likesRef.documents.forEach((element) async{
+      //elementは１行分のデータ(element.documentIDはcommentsコレクション直下のID)
+      final likeRef = _db.collection('likes').document(element.documentID);
+      await likeRef.delete();
+    });
+
+    //Storageから画像削除
+    final storageRef = FirebaseStorage.instance.ref().child(imageStoragePath);
+    storageRef.delete();
+
+  }
 }

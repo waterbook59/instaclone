@@ -141,6 +141,10 @@ class PostRepository {
     await dbManager.likeIt(like);
   }
 
+  Future<void> unLikeIt(Post post, User currentUser) async{
+    await dbManager.unLikeIt(post,currentUser);
+  }
+
   //自分が投稿に対していいねをしているかを判定する
   Future<LikeResult> getLikeResult(String postId, User currentUser) async{
     //まずDBに登録されている「いいね」(likesの中のpostIdに紐づくデータ)の取得
@@ -155,4 +159,10 @@ class PostRepository {
     }
     return LikeResult(likes: likes, isLikedToThisPost: isLikedPost);
   }
+
+  Future<void> deletePost(String postId, String imageStoragePath) async{
+    await dbManager.deletePost(postId,imageStoragePath);
+  }
+
+
 }

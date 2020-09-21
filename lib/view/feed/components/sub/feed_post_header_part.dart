@@ -4,7 +4,10 @@ import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/utils/constants.dart';
 import 'package:instaclone/view/common/components/user_card.dart';
+import 'package:instaclone/view/common/dialog/confirm_dialog.dart';
 import 'package:instaclone/view/feed/screens/feed_post_edit_screen.dart';
+import 'package:instaclone/view_models/feed_view_model.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 class FeedPostHeaderPart extends StatelessWidget {
@@ -13,11 +16,10 @@ class FeedPostHeaderPart extends StatelessWidget {
   final User currentUser;
   final FeedMode feedMode;
 
-  FeedPostHeaderPart(
-      {this.postUser,
-      @required this.post,
-      @required this.currentUser,
-      @required this.feedMode});
+  FeedPostHeaderPart({this.postUser,
+    @required this.post,
+    @required this.currentUser,
+    @required this.feedMode});
 
   @override
   Widget build(BuildContext context) {
@@ -67,20 +69,37 @@ class FeedPostHeaderPart extends StatelessWidget {
     switch (selectedMenu) {
       case PostMenu.EDIT:
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => FeedPostEditScreen(
-                      post: post,
-                      postUser: postUser,
-                      feedMode: feedMode,
-                    ),
-            ),
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                FeedPostEditScreen(
+                  post: post,
+                  postUser: postUser,
+                  feedMode: feedMode,
+                ),
+          ),
         );
         break;
       case PostMenu.SHARE:
-        Share.share(post.imageUrl,subject: post.caption);
+        Share.share(post.imageUrl, subject: post.caption);
         break;
-
+      case PostMenu.DELETE:
+        showConfirmDialog(
+            context: context,
+            title: S.of(context).deletePost,
+            content: S.of(context).deletePostConfirm,
+            onConfirmed: (isConfirmed) {
+              isConfirmed
+                  ? _deletePost(context, post)
+                  : Container();
+            }
+        );
     }
+  }
+
+  void _deletePost(BuildContext context, Post post) async {
+      final feedViewModel = Provider.of<FeedViewModel>(context,listen: false);
+      //削除した後に再度リスト取ってくるときにfeedModeが必要
+      await feedViewModel.deletePost(post,feedMode);
   }
 }

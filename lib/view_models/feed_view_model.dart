@@ -65,8 +65,25 @@ class FeedViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  Future<void>unLikeIt(Post post) async{
+    await postRepository.unLikeIt(post,currentUser);
+    notifyListeners();
+  }
+
   Future<LikeResult> getLikeResult(String postId) async{
     //自分がこの投稿(postIdに対していいねをしてるかを判別するのにcurrentUser渡す
    return await postRepository.getLikeResult(postId,currentUser);
   }
+
+  //投稿削除
+  Future<void>deletePost(Post post, FeedMode feedMode) async{
+    isProcessing =true;
+    notifyListeners();
+    await postRepository.deletePost(post.postId,post.imageStoragePath);
+    await getPosts(feedMode);
+    isProcessing =false;
+    notifyListeners();
+  }
+
+
 }
