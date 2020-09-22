@@ -103,7 +103,7 @@ assets:
 fonts:
      - family: Billabong
        fonts:
-         - asset: assets/fonts/Billabong.ttf
+        - asset: assets/fonts/Billabong.ttf
      - family: NotoSansJP_Bold
        fonts:
          - asset: assets/fonts/NotoSansJP-Bold.otf

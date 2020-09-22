@@ -97,8 +97,8 @@ class PostRepository {
       return dbManager.getPostsMineAndFollowings(feedUser.userId);
     }
     if (feedMode == FeedMode.FROM_PROFILE) {
-      //todo  プロフィール画面に表示されているユーザーのみ(自分とは限らない)
-//      return dbManager.getPostByUser(feedUser.userId)
+      //  プロフィール画面に表示されているユーザーのみ(自分とは限らない)
+      return dbManager.getPostByUser(feedUser.userId);
     }
   }
 

@@ -59,6 +59,22 @@ class DatabaseManager {
     await _db.collection('posts').document(post.postId).setData(post.toMap());
   }
 
+  // プロフィールの時
+  Future<List<Post>> getPostByUser(String userId) async{
+    final query =await _db.collection('posts').getDocuments();
+    if(query.documents.length == 0) return List();
+    var results = List<Post>();
+    await _db.collection('posts').where('userId',isEqualTo:userId)
+        .orderBy('postDatetime',descending: true).getDocuments()
+    .then((value) {
+      value.documents.forEach((element) {
+        results.add(Post.fromMap(element.data));
+      });
+    });
+    return results;
+  }
+
+
   Future<List<Post>> getPostsMineAndFollowings(String userId) async{
     //firebaseにデータがない状態でデータ取るとアプリ落ちる
     //データの有無を判定
@@ -88,8 +104,7 @@ class DatabaseManager {
 
   }
 
-  //todo プロフィールの時
-  Future<List<Post>> getPostByUser(String userId) {}
+
 
   //自分がフォローしているユーザーを取ってくる
   Future<List<String>>getFollowingUserIds(String userId) async{

@@ -6,6 +6,8 @@ import 'package:instaclone/utils/constants.dart';
 import 'package:instaclone/view/common/components/user_card.dart';
 import 'package:instaclone/view/common/dialog/confirm_dialog.dart';
 import 'package:instaclone/view/feed/screens/feed_post_edit_screen.dart';
+import 'package:instaclone/view/profile/pages/profile_page.dart';
+import 'package:instaclone/view/profile/screens/profile_screen.dart';
 import 'package:instaclone/view_models/feed_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
@@ -27,8 +29,8 @@ class FeedPostHeaderPart extends StatelessWidget {
       photoUrl: postUser.photoUrl,
       title: postUser.inAppUserName,
       subtitle: post.locationString,
-      onTap: null,
-      //todo
+      //タップするとプロフィール表示
+      onTap:()=> _openProfile(context,postUser),
       trailing: PopupMenuButton(
         icon: Icon(Icons.more_vert),
         onSelected: (value) => _onPopupMenuSelected(context, value),
@@ -101,5 +103,16 @@ class FeedPostHeaderPart extends StatelessWidget {
       final feedViewModel = Provider.of<FeedViewModel>(context,listen: false);
       //削除した後に再度リスト取ってくるときにfeedModeが必要
       await feedViewModel.deletePost(post,feedMode);
+  }
+
+  _openProfile(BuildContext context, User postUser) {
+    final feedViewModel = Provider.of<FeedViewModel>(context,listen: false);
+    Navigator.push(context, MaterialPageRoute(
+      builder: (_)=>ProfileScreen(
+          profileMode: postUser.userId == feedViewModel.currentUser.userId
+          ? ProfileMode.MYSELF
+              :ProfileMode.OTHER,
+          selectedUser: postUser),
+    ));
   }
 }
