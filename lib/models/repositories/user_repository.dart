@@ -74,4 +74,14 @@ class UserRepository{
   Future<User> getUserById(String userId) async{
     return await dbManager.getUserInfoFromDbById(userId);
   }
+
+  Future<void> singOut() async{
+    //googleとfirebase両方のサインアウトが必要
+    //googleからサインアウト（現状disconnect使うとアプリが落ちる可能性あり）
+    await _googleSignIn.signOut();
+    //firebaseからサインアウト
+    await _auth.signOut();
+    //次起動した時にcurrentUserが残っていると起動前の情報が使われてしまう
+    currentUser = null;
+  }
 }

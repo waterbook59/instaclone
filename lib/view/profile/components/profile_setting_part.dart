@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/utils/constants.dart';
+import 'package:instaclone/view/login/screens/login_screen.dart';
+import 'package:instaclone/view_models/profile_view_model.dart';
+import 'package:provider/provider.dart';
 
 class ProfileSettingPart extends StatelessWidget {
   final ProfileMode mode;
@@ -39,7 +42,21 @@ class ProfileSettingPart extends StatelessWidget {
   }
 
   //todo
-  onPopupMenuSelected(BuildContext context, value) {
+  onPopupMenuSelected(BuildContext context,ProfileSettingMenu selectedMenu) {
+    switch(selectedMenu){
+      case ProfileSettingMenu.THEME_CHANGE:
+        break;
+      case ProfileSettingMenu.SIGN_OUT:
+        _signOut(context);
+        break;
+    }
+  }
 
+  void _signOut(BuildContext context) async{
+    final profileViewModel = Provider.of<ProfileViewModel>(context,listen: false);
+    await profileViewModel.signOut();
+    Navigator.pushReplacement(context, MaterialPageRoute(
+      builder: (context)=>LoginScreen(),
+    ));
   }
 }
