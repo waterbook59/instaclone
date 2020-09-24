@@ -84,4 +84,13 @@ class UserRepository{
     //次起動した時にcurrentUserが残っていると起動前の情報が使われてしまう
     currentUser = null;
   }
+
+  Future<int>getNumberOfFollowers(User profileUser) async{
+    //フォロワーのIDリストを取ってくる
+    return (await dbManager.getFollowerUserIds(profileUser.userId)).length;
+  }
+
+  Future<int> getNumberOfFollowings(User profileUser) async{
+    return (await dbManager.getFollowingUserIds(profileUser.userId)).length;
+  }
 }

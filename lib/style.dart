@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instaclone/view_models/profile_view_model.dart';
 
 //pubspec.yamlでfamily:に設定した名称
 const TitleFont = "Billabong";
@@ -24,3 +25,7 @@ const commentContentTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 13.0
 
 //Comments
 const commentInputTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 14.0,);
+
+//Profile
+const profileRecordScoreTextStyle = TextStyle(fontFamily: BoldFont,fontSize: 20);
+const profileRecordTitleTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 14);
