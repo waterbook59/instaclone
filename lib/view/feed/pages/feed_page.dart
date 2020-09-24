@@ -23,6 +23,7 @@ class FeedPage extends StatelessWidget {
       ),
       body: FeedSubPage(
         feedMode: FeedMode.FROM_FEED,
+        index: 0,
       ),
     );
   }
