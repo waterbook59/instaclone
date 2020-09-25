@@ -30,6 +30,7 @@ class FeedSubPage extends StatelessWidget {
       } else {
         return RefreshIndicator(
           onRefresh: ()=>feedViewModel.getPosts(feedMode),
+          //chapter163
           child: ScrollablePositionedList.builder(
             //initialに設定したものに初期表示される
             initialScrollIndex: index,

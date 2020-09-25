@@ -3,6 +3,7 @@ import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/utils/constants.dart';
 import 'package:instaclone/view/common/components/circle_photo.dart';
+import 'package:instaclone/view/profile/screens/edit_profile_screen.dart';
 import 'package:instaclone/view_models/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,7 @@ class ProfileBio extends StatelessWidget {
     final profileUser = profileViewModel.profileUser;
 
     return Padding(
-      padding: const EdgeInsets.only(top:16.0),
+      padding: const EdgeInsets.only(top: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,6 +43,8 @@ class ProfileBio extends StatelessWidget {
 
   _button(BuildContext context, User profileUser) {
     return RaisedButton(
+      //プロフィール編集画面
+      onPressed: ()=>_openEditProfileScreen(context),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
       ),
@@ -50,5 +53,10 @@ class ProfileBio extends StatelessWidget {
           //todo
           : Text('フォローする'),
     );
+  }
+
+  _openEditProfileScreen(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => EditProfileScreen()));
   }
 }
