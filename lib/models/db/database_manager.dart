@@ -248,5 +248,11 @@ class DatabaseManager {
     storageRef.delete();
   }
 
+  //プロフィール更新
+  Future<void> updateProfile(User updateUser) async{
+    final reference = _db.collection('users').document(updateUser.userId);
+    await reference.updateData(updateUser.toMap());
+  }
+
 
 }

@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/models/db/database_manager.dart';
+import 'package:uuid/uuid.dart';
 
-class UserRepository{
+class UserRepository {
   //databaseManagerをDI
   final DatabaseManager dbManager;
+
   UserRepository({this.dbManager});
 
   //取得したDBからのデータをUseRepositoryのインスタンスを経由せずにアプリ全体で使えるようにstaticとしてcurrentUserに格納
@@ -17,44 +21,46 @@ class UserRepository{
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<bool> isSignIn() async {
-   final firebaseUser = await _auth.currentUser();
-   if(firebaseUser != null){
-     //サインアウトメソッド（disconnectメソッドはうまくいかないみたい）を使って次回ログインした時にログイン履歴があると自動的にログインされてしまう
-    //その時currentUserがnullになってしまうので、DBから取ってきたデータをcurrentUserに入れておきたい
-    currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
-     return true;
-   }
-   return false;
+    final firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      //サインアウトメソッド（disconnectメソッドはうまくいかないみたい）を使って次回ログインした時にログイン履歴があると自動的にログインされてしまう
+      //その時currentUserがnullになってしまうので、DBから取ってきたデータをcurrentUserに入れておきたい
+      currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
+      return true;
+    }
+    return false;
   }
 
-  Future<bool> signIn() async{
-    try{
+  Future<bool> signIn() async {
+    try {
       //step6.サインインしてグーグルアカウントで認証する
-    GoogleSignInAccount signInAccount = await _googleSignIn.signIn();
-    GoogleSignInAuthentication signInAuthentication =await signInAccount.authentication;
+      GoogleSignInAccount signInAccount = await _googleSignIn.signIn();
+      GoogleSignInAuthentication signInAuthentication =
+          await signInAccount.authentication;
 
-    //step7.認証したidでトークン作って信用状にする
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: signInAuthentication.accessToken,
-      idToken: signInAuthentication.idToken,
-    );
+      //step7.認証したidでトークン作って信用状にする
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: signInAuthentication.accessToken,
+        idToken: signInAuthentication.idToken,
+      );
 
-    //step8
-    final firebaseUser = (await _auth.signInWithCredential(credential)).user;
-    if(firebaseUser ==null){
-      return false;
-    }
-    //todo firebase上にuserがいたらdbに登録
-    //まず、dbにuserがいるかどうか：いなかったら登録
-      final isUserExistedInDb =await dbManager.searchUserInDb(firebaseUser);
-      if(!isUserExistedInDb){//dbにuserいないとき〜
+      //step8
+      final firebaseUser = (await _auth.signInWithCredential(credential)).user;
+      if (firebaseUser == null) {
+        return false;
+      }
+      //todo firebase上にuserがいたらdbに登録
+      //まず、dbにuserがいるかどうか：いなかったら登録
+      final isUserExistedInDb = await dbManager.searchUserInDb(firebaseUser);
+      if (!isUserExistedInDb) {
+        //dbにuserいないとき〜
         //firebaseUser(PlatformUserInfo)をモデルクラスのUserへ変換必要_convertToUser(firebaseUser)してdbに登録
         await dbManager.insertUser(_convertToUser(firebaseUser));
       }
       //DBに登録したユーザーデータを取得＆アプリ全体で使えるように(static!!)する
       currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
       return true;
-    } catch(error){
+    } catch (error) {
       print("sign in error caught!:${error.toString()}");
       return false;
     }
@@ -62,20 +68,21 @@ class UserRepository{
 
   _convertToUser(FirebaseUser firebaseUser) {
     return User(
-        userId:firebaseUser.uid,
-     displayName:firebaseUser.displayName,
-    inAppUserName:firebaseUser.displayName,//最初はgoogleアカウントのユーザー名でよい
-    photoUrl:firebaseUser.photoUrl,
-    email:firebaseUser.email,
-    bio:"",
+      userId: firebaseUser.uid,
+      displayName: firebaseUser.displayName,
+      inAppUserName: firebaseUser.displayName,
+      //最初はgoogleアカウントのユーザー名でよい
+      photoUrl: firebaseUser.photoUrl,
+      email: firebaseUser.email,
+      bio: "",
     );
   }
 
-  Future<User> getUserById(String userId) async{
+  Future<User> getUserById(String userId) async {
     return await dbManager.getUserInfoFromDbById(userId);
   }
 
-  Future<void> singOut() async{
+  Future<void> singOut() async {
     //googleとfirebase両方のサインアウトが必要
     //googleからサインアウト（現状disconnect使うとアプリが落ちる可能性あり）
     await _googleSignIn.signOut();
@@ -85,12 +92,38 @@ class UserRepository{
     currentUser = null;
   }
 
-  Future<int>getNumberOfFollowers(User profileUser) async{
+  Future<int> getNumberOfFollowers(User profileUser) async {
     //フォロワーのIDリストを取ってくる
     return (await dbManager.getFollowerUserIds(profileUser.userId)).length;
   }
 
-  Future<int> getNumberOfFollowings(User profileUser) async{
+  Future<int> getNumberOfFollowings(User profileUser) async {
     return (await dbManager.getFollowingUserIds(profileUser.userId)).length;
+  }
+
+  //プロフィール更新
+  Future<void> updateProfile(User profileUser, String nameUpdated,
+      String bioUpdated, String photoUrlUpdated, bool isImageFromFile) async{
+    var updatePhotoUrl;
+
+    if(isImageFromFile){
+     //Fileからの場合のアップデート
+      final updatePhotoFile = File(photoUrlUpdated);
+      final storagePath = Uuid().v1();
+      updatePhotoUrl = await dbManager.uploadImageToStorage(updatePhotoFile, storagePath);
+    }
+    //そうでない場合、変更前のユーザーデータ持ってくる
+    final userBeforeUpdate = await dbManager.getUserInfoFromDbById(profileUser.userId);
+    final updateUser = userBeforeUpdate.copyWith(//変えたいところだけcopyWith
+      inAppUserName: nameUpdated,
+      photoUrl: isImageFromFile ? updatePhotoUrl : userBeforeUpdate.photoUrl,
+      bio: bioUpdated
+    );
+    await dbManager.updateProfile(updateUser);
+  }
+
+  //currentUserの更新
+  Future<void> getCurrentUserById(String userId) async{
+    currentUser = await dbManager.getUserInfoFromDbById(userId);
   }
 }

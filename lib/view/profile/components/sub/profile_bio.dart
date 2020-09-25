@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/generated/l10n.dart';
+import 'package:instaclone/style.dart';
 import 'package:instaclone/utils/constants.dart';
 import 'package:instaclone/view/common/components/circle_photo.dart';
 import 'package:instaclone/view/profile/screens/edit_profile_screen.dart';
@@ -26,8 +27,8 @@ class ProfileBio extends StatelessWidget {
           Text(
             profileUser.inAppUserName,
           ),
-          //todo バイオ
-          Text('バイオ'),
+          // バイオ('bio'は'biography(経歴)'の意味)
+          Text(profileUser.bio,style: profileBioTextStyle,),
           SizedBox(
             height: 16,
           ),

@@ -31,3 +31,4 @@ const profileRecordScoreTextStyle = TextStyle(fontFamily: BoldFont,fontSize: 20)
 const profileRecordTitleTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 14);
 const changeProfilePhotoTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 18,color: Colors.blueAccent);
 const editProfileTitleTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 14);
+const profileBioTextStyle = TextStyle(fontFamily: RegularFont,fontSize: 13);
