@@ -10,6 +10,7 @@ import 'package:instaclone/data_models/comments.dart';
 import 'package:instaclone/data_models/like.dart';
 import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
+import 'package:instaclone/models/repositories/user_repository.dart';
 
 class DatabaseManager {
   //firestoreのインスタンスとってくる
@@ -131,15 +132,12 @@ class DatabaseManager {
         .getDocuments();
     if (query.documents.length == 0) return List();
     var userIds = List<String>();
-    query.documents.forEach((id){
+    query.documents.forEach((id) {
       //followersの中のフィールドはuserIdにするので、id.data['userId']
       userIds.add(id.data['userId']);
     });
     return userIds;
   }
-
-
-
 
 
   Future<void> updatePost(Post updatePost) async {
@@ -249,10 +247,31 @@ class DatabaseManager {
   }
 
   //プロフィール更新
-  Future<void> updateProfile(User updateUser) async{
+  Future<void> updateProfile(User updateUser) async {
     final reference = _db.collection('users').document(updateUser.userId);
     await reference.updateData(updateUser.toMap());
   }
 
+  //ユーザー検索
+  Future<List<User>> searchUsers(String queryString) async {
+    //まずコレクションにデータがあるか
+    //検索入力前はinAppUserNameで昇順でユーザーが並んでいる
+    //startAtにqueryのリストいれるとquery入力で始まるリストを取ってきてくれる、
+    // 終点をuf88で設定しないとstartAtしても候補が結局全部出てきてしまう ???ワイルドカード的な検索
+    final query = await _db.collection('users').orderBy('inAppUserName')
+        .startAt([queryString])
+        .endAt([queryString + "\uf8ff"])
+        .getDocuments();
 
+    if (query.documents.length == 0) return List();
+    var soughtUsers = List<User>();
+    query.documents.forEach((element) {
+      //自分以外のユーザーだけを取ってくる
+      final selectedUser = User.fromMap(element.data);
+      if (selectedUser.userId != UserRepository.currentUser.userId) {
+        soughtUsers.add(selectedUser);
+      }
+    });
+    return soughtUsers;
+  }
 }

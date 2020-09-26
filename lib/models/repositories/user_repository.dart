@@ -126,4 +126,9 @@ class UserRepository {
   Future<void> getCurrentUserById(String userId) async{
     currentUser = await dbManager.getUserInfoFromDbById(userId);
   }
+
+  //ユーザー検索
+  Future<List<User>>searchUsers(String query) async{
+    return dbManager.searchUsers(query);
+  }
 }
