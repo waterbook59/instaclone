@@ -16,8 +16,8 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //プロフィール画面に表示するユーザーの特定
-    final profileViewModel = Provider.of<ProfileViewModel>(
-        context, listen: false);
+    final profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
+    //ユーザー設定する時にフォローしている/フォローをやめるのどちらの表示かを設定
     profileViewModel.setProfileUser(profileMode, selectedUser);
     Future(() => profileViewModel.getPost());
 

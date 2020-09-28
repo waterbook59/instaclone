@@ -20,12 +20,18 @@ class ProfileViewModel extends ChangeNotifier {
   bool isProcessing = false;
   List<Post> posts = <Post>[];
 
+  //フォローしてるかどうか
+  bool isFollowingProfileUser = false;
+
   //表示ユーザーを選択
   void setProfileUser(ProfileMode profileMode, User selectedUser) {
     if (profileMode == ProfileMode.MYSELF) {
       profileUser = currentUser;
     } else {
+      //chapter178 他人の場合はフォローする/やめる表示の状態を確認・セット
       profileUser = selectedUser;
+      checkIsFollowing();
+
     }
   }
 
@@ -81,4 +87,25 @@ class ProfileViewModel extends ChangeNotifier {
     isProcessing = false;
     notifyListeners();
   }
+
+  //フォローするボタンを押した処理
+  Future<void> follow() async {
+    await userRepository.follow(profileUser);
+    isFollowingProfileUser = true;
+    notifyListeners();
+  }
+  //フォローやめるボタンを押した処理
+  Future<void> unFollow() async{
+    await userRepository.unFollow(profileUser);
+    isFollowingProfileUser = false;
+    notifyListeners();
+  }
+
+  //自分じゃないユーザーのプロフィールを読み込む時のフォロー状態をとってくる
+  Future<void> checkIsFollowing() async{
+    isFollowingProfileUser = await userRepository.checkIsFollowing(profileUser);
+    notifyListeners();
+  }
+
+
 }

@@ -257,7 +257,7 @@ class DatabaseManager {
     //まずコレクションにデータがあるか
     //検索入力前はinAppUserNameで昇順でユーザーが並んでいる
     //startAtにqueryのリストいれるとquery入力で始まるリストを取ってきてくれる、
-    // 終点をuf88で設定しないとstartAtしても候補が結局全部出てきてしまう ???ワイルドカード的な検索
+    // 終点をuf88で設定しないとstartAtしても候補が結局全部出てきてしまう ???ワイルドカード的な検索???
     final query = await _db.collection('users').orderBy('inAppUserName')
         .startAt([queryString])
         .endAt([queryString + "\uf8ff"])
@@ -274,4 +274,52 @@ class DatabaseManager {
     });
     return soughtUsers;
   }
+
+  //ログインしているcurrentUserがフォローすると、followingコレクション内にprofileUser側のuserIDをセットして、
+  //profileUser側のfollowersコレクション内にcurrentUserのIDがセットされる
+  Future<void> follow(User profileUser, User currentUser) async{
+    //currentUserにとってのfollowingsへセット
+  await _db.collection('users').document(currentUser.userId)
+      .collection('followings').document(profileUser.userId)
+      .setData({'userId':profileUser.userId});
+
+    //profileUserにとってのfollowersへセット
+  await _db.collection('users').document(profileUser.userId)
+      .collection('followers').document(currentUser.userId)
+      .setData({'userId':currentUser.userId});
+  }
+
+  Future<void> unFollow(User profileUser, User currentUser) async{
+    //currentUserにとってのfollowingsを削除
+    await _db.collection('users').document(currentUser.userId)
+        .collection('followings').document(profileUser.userId)
+        .delete();
+    //profileUserにとってのfollowersを削除
+    await _db.collection('users').document(profileUser.userId)
+        .collection('followers').document(currentUser.userId)
+        .delete();
+  }
+
+
+
+
+  Future<bool> checkIsFollowing(User profileUser, User currentUser) async{
+    //自分の中で自分がフォローした人がいるかどうかチェック
+    final query = await _db.collection('users').document(currentUser.userId).collection('followings').getDocuments();
+    if(query.documents.length==0) return false;
+    //自分(currentUser)のfollowingsコレクション内にpforfileUserと同じuserIdがある場合、trueを返す
+    final checkQuery =  await _db.collection('users').document(currentUser.userId).collection('followings')
+        .where('userId',isEqualTo: profileUser.userId).getDocuments();
+    if(checkQuery.documents.length>0) {
+      //フォローしてる
+      return true;
+    }else{
+      //フォローしてない
+      return false;
+    }
+  }
+
+
+
+
 }

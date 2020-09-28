@@ -131,4 +131,21 @@ class UserRepository {
   Future<List<User>>searchUsers(String query) async{
     return dbManager.searchUsers(query);
   }
+
+  //フォローするのに、プロフィールユーザーと自分のIDの２つの紐付けが必要
+  Future<void> follow(User profileUser) async{
+    await dbManager.follow(profileUser,currentUser);
+  }
+
+  Future<void> unFollow(User profileUser) async{
+    await dbManager.unFollow(profileUser,currentUser);
+  }
+
+
+  //自分じゃない人のプロフィール画面を開いた時のフォロー状態をとってくる
+  Future<bool> checkIsFollowing(User profileUser) async{
+    return await dbManager.checkIsFollowing(profileUser,currentUser);
+  }
+
+
 }
