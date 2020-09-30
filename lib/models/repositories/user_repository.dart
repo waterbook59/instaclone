@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/models/db/database_manager.dart';
+import 'package:instaclone/utils/constants.dart';
 import 'package:uuid/uuid.dart';
 
 class UserRepository {
@@ -145,6 +146,22 @@ class UserRepository {
   //自分じゃない人のプロフィール画面を開いた時のフォロー状態をとってくる
   Future<bool> checkIsFollowing(User profileUser) async{
     return await dbManager.checkIsFollowing(profileUser,currentUser);
+  }
+
+  //ここで３つに分岐
+  Future<List> getCaresMeUsers(String id, WhoCaresMeMode mode) async{
+    var results = List<User>();
+
+    //todo
+    switch (mode){
+      case WhoCaresMeMode.LIKE:
+        break;
+      case WhoCaresMeMode.FOLLOWINGS:
+        break;
+      case WhoCaresMeMode.FOLLOWED:
+        break;
+    }
+    return results;
   }
 
 

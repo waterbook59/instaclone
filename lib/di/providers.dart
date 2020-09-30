@@ -10,6 +10,7 @@ import 'package:instaclone/view_models/login_view_model.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:instaclone/view_models/profile_view_model.dart';
 import 'package:instaclone/view_models/search_view_model.dart';
+import 'package:instaclone/view_models/who_cares_me_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -75,4 +76,10 @@ List<SingleChildWidget> viewModels =[
       userRepository:Provider.of<UserRepository>(context,listen:false),
     ),
   ),
+  ChangeNotifierProvider<WhoCaresMeViewModel>(
+    create: (context)=>WhoCaresMeViewModel(
+      userRepository:Provider.of<UserRepository>(context,listen:false),
+    ),
+  ),
+
 ];

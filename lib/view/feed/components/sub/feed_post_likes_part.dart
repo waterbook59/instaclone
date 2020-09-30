@@ -5,7 +5,9 @@ import 'package:instaclone/data_models/post.dart';
 import 'package:instaclone/data_models/user.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/style.dart';
+import 'package:instaclone/utils/constants.dart';
 import 'package:instaclone/view/comments/screens/comment_screen.dart';
+import 'package:instaclone/view/who_cares_me/screens/who_cares_me_screen.dart';
 import 'package:instaclone/view_models/feed_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -37,30 +39,36 @@ class FeedPostLikesPart extends StatelessWidget {
                       //いいねあり・なしでview側変更
                       likeResult.isLikedToThisPost
                           ? IconButton(
-                        icon: FaIcon(FontAwesomeIcons.solidHeart),
-                        onPressed: () => _unLikeIt(context),
-                      )
+                              icon: FaIcon(FontAwesomeIcons.solidHeart),
+                              onPressed: () => _unLikeIt(context),
+                            )
                           : IconButton(
-                        icon: FaIcon(FontAwesomeIcons.heart),
-                        onPressed: () => _likeIt(context),
-                      ),
+                              icon: FaIcon(FontAwesomeIcons.heart),
+                              onPressed: () => _likeIt(context),
+                            ),
                       IconButton(
                         icon: FaIcon(FontAwesomeIcons.comment),
                         onPressed: () =>
                             _openCommentsScreen(context, post, postUser),
                       ),
-                    ]
-                ),
-                Text(
-                  likeResult.likes.length.toString() + '' + S
-                      .of(context)
-                      .likes,
-                  style: numberOfLikesTextStyle,
+                    ]),
+                GestureDetector(
+                  onTap: () => _checkLikesUser(context),
+                  child: Text(
+                    likeResult.likes.length.toString() +
+                        '' +
+                        S.of(context).likes,
+                    style: numberOfLikesTextStyle,
+                  ),
                 ),
               ],
             );
           } else {
-            return Container(child: Center(child: Text('何ー'),),);
+            return Container(
+              child: Center(
+                child: Text('何ー'),
+              ),
+            );
           }
         },
       ),
@@ -71,11 +79,10 @@ class FeedPostLikesPart extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) =>
-            CommentScreen(
-              post: post,
-              postUser: postUser,
-            ),
+        builder: (_) => CommentScreen(
+          post: post,
+          postUser: postUser,
+        ),
       ),
     );
   }
@@ -86,8 +93,20 @@ class FeedPostLikesPart extends StatelessWidget {
   }
 
   //「いいね」やめる処理
-  _unLikeIt(BuildContext context) async{
+  _unLikeIt(BuildContext context) async {
     final feedViewModel = Provider.of<FeedViewModel>(context, listen: false);
     await feedViewModel.unLikeIt(post);
+  }
+
+  _checkLikesUser(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => WhoCaresMeScreen(
+          mode: WhoCaresMeMode.LIKE,
+          id: post.postId,
+        ),
+      ),
+    );
   }
 }

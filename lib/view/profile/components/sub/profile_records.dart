@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instaclone/generated/l10n.dart';
 import 'package:instaclone/style.dart';
+import 'package:instaclone/utils/constants.dart';
+import 'package:instaclone/view/who_cares_me/screens/who_cares_me_screen.dart';
 import 'package:instaclone/view_models/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +19,8 @@ class ProfileRecords extends StatelessWidget {
             return  _userRecordWidget(
                 context: context,
                 score: snapshot.hasData ? snapshot.data : 0,
-                title: S.of(context).post
+                title: S.of(context).post,
+              //投稿は押しても反応しなくてよいので、whoCaresMeは入れない
             );
           },
         ),
@@ -27,7 +30,9 @@ class ProfileRecords extends StatelessWidget {
             return _userRecordWidget(
                 context: context,
                 score: snapshot.hasData ? snapshot.data : 0,
-                title: S.of(context).followers
+                title: S.of(context).followers,
+              //フォロワー押すと誰なのかを表示
+              whoCaresMeMode:WhoCaresMeMode.FOLLOWED
             );
           },
         ),
@@ -38,6 +43,8 @@ class ProfileRecords extends StatelessWidget {
                 context: context,
                 score: snapshot.hasData ? snapshot.data : 0,
                 title: S.of(context).followings,
+                //フォロ-中を押すと誰なのかを表示
+                whoCaresMeMode:WhoCaresMeMode.FOLLOWINGS,
             );
           },
         ),
@@ -45,13 +52,30 @@ class ProfileRecords extends StatelessWidget {
     );
   }
 
-  _userRecordWidget({BuildContext context, int score, String title}) {
+  _userRecordWidget({BuildContext context, int score, String title,WhoCaresMeMode whoCaresMeMode}) {
     return Expanded(
       flex: 1,
-      child: Column(children: [
-        Text(score.toString(), style: profileRecordScoreTextStyle,),
-        Text(title, style: profileRecordTitleTextStyle,),
-      ],),
+      child: GestureDetector(
+        onTap: whoCaresMeMode ==null
+        ? null
+        :()=>_checkFollowUsers(context,whoCaresMeMode),
+        child: Column(children: [
+          Text(score.toString(), style: profileRecordScoreTextStyle,),
+          Text(title, style: profileRecordTitleTextStyle,),
+        ],),
+      ),
+    );
+  }
+
+  _checkFollowUsers(BuildContext context, WhoCaresMeMode whoCaresMeMode) {
+    final profileViewModel= Provider.of<ProfileViewModel>(context,listen: false);
+    final profileUser = profileViewModel.profileUser;
+    Navigator.push(context, MaterialPageRoute(
+      builder:(_)=>WhoCaresMeScreen(
+        mode: whoCaresMeMode,
+        id:profileUser.userId,
+      )
+    ),
     );
   }
 }

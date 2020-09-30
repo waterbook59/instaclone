@@ -30,3 +30,9 @@ enum ProfileSettingMenu{
   THEME_CHANGE,
   SIGN_OUT,
 }
+
+enum WhoCaresMeMode{
+  LIKE,
+  FOLLOWINGS,
+  FOLLOWED
+}
