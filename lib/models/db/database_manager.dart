@@ -34,8 +34,8 @@ class DatabaseManager {
     await _db.collection("users").document(user.userId).setData(user.toMap());
   }
 
+  //userIdを渡したらそれに紐づくUserデータを取ってくる
   Future<User> getUserInfoFromDbById(String userId) async {
-    //userIdに紐づくUserデータを取ってくる
     //検索条件を使ってデータ取ってくる、queryに格納してそれをmap化したものをfromMapでほぐす
     final query = await _db
         .collection("users")
@@ -137,6 +137,33 @@ class DatabaseManager {
       userIds.add(id.data['userId']);
     });
     return userIds;
+  }
+
+  //chapter184 いいねしたユーザーを投稿idからとってくる
+  Future<List<User>> getLikesUsers(String postId) async{
+    //likesコレクションの中の全部のドキュメントからフィールドのpostIdで検索
+    //postIdが同じのフィールドデータを全部とってくる
+    print('dbManagerにきたpostId:$postId');//cc9f23...
+    final query = await _db.collection('likes').where('postId',isEqualTo: postId).getDocuments();
+    if(query.documents.length == 0) return List();
+    print('postIdで検索した中身：${query.documents}');
+    var userIds  =List<String>();
+    //postIdで引っ張ってきた全データからforEachで回して、いいねしたユーザーのidのリストを作る
+    query.documents.forEach((id) {
+      //ここでid.data['likeUserId']とすることでlikeUserIdだけのリストを作れる
+      //例えばid.data['likeDateTime']とするとlikeDateTimeだけのリスト作れる
+      userIds.add(id.data['likeUserId']);
+    });
+    print('likeUserIdリスト：$userIds');
+    //得られたuserIdからuserコレクションからUserデータのリストを作る
+    var likesUsers = List<User>();
+    //ループ全体をawaitした時はFuture.forEach
+    await Future.forEach(userIds, (userId) async{
+      final user = await getUserInfoFromDbById(userId);
+      likesUsers.add(user);
+    });
+    print('誰がいいねしたか？：$likesUsers');
+    return likesUsers;
   }
 
 
@@ -318,6 +345,32 @@ class DatabaseManager {
       return false;
     }
   }
+
+  //プロフィールユーザーIDからフォロワーのユーザー情報をとってくる
+  Future<List<User>> getFollowerUsers(String profileUseId) async{
+    //フォロワーのidのリストが返ってくる
+    final followerUserIds = await getFollowerUserIds(profileUseId);
+    //得られたフォロワーidリストからとってきたUser情報をリストに変換
+    var followerUsers = List<User>();
+    await Future.forEach(followerUserIds, (followerUserId) async{
+      final user = await getUserInfoFromDbById(followerUserId);
+      followerUsers.add(user);
+    });
+    return followerUsers;
+  }
+
+  //プロフィールユーザーIDから自分がフォローしているのユーザー情報をとってくる
+  Future<List<User>> getFollowingUsers(String profileUseId) async{
+    final followingUserIds = await getFollowingUserIds(profileUseId);
+    var followingUsers = List<User>();
+    await Future.forEach(followingUserIds, (followingUserId) async{
+      final user = await getUserInfoFromDbById(followingUserId);
+      followingUsers.add(user);
+    });
+    return followingUsers;
+  }
+
+
 
 
 

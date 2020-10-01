@@ -155,10 +155,17 @@ class UserRepository {
     //todo
     switch (mode){
       case WhoCaresMeMode.LIKE:
+        //いいねの場合は投稿id
+        final postId = id;
+        results = await dbManager.getLikesUsers(postId);
         break;
       case WhoCaresMeMode.FOLLOWINGS:
+        final profileUseId = id;
+        results = await dbManager.getFollowingUsers(profileUseId);
         break;
       case WhoCaresMeMode.FOLLOWED:
+        final profileUseId = id;
+        results = await dbManager.getFollowerUsers(profileUseId);
         break;
     }
     return results;
