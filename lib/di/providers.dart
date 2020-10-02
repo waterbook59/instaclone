@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instaclone/models/db/database_manager.dart';
 import 'package:instaclone/models/location/location_manager.dart';
 import 'package:instaclone/models/repositories/post_repository.dart';
+import 'package:instaclone/models/repositories/theme_change_repository.dart';
 import 'package:instaclone/models/repositories/user_repository.dart';
 import 'package:instaclone/view_models/comments_view_model.dart';
 import 'package:instaclone/view_models/feed_view_model.dart';
@@ -10,6 +11,7 @@ import 'package:instaclone/view_models/login_view_model.dart';
 import 'package:instaclone/view_models/post_view_model.dart';
 import 'package:instaclone/view_models/profile_view_model.dart';
 import 'package:instaclone/view_models/search_view_model.dart';
+import 'package:instaclone/view_models/theme_change_view_model.dart';
 import 'package:instaclone/view_models/who_cares_me_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -27,6 +29,10 @@ List<SingleChildWidget> independentModels =[
   ),
   Provider<LocationManager>(
     create: (_)=>LocationManager(),
+  ),
+  //テーマ変更はThemeChangeRepositoryが最下層
+  Provider<ThemeChangeRepository>(
+    create: (_)=>ThemeChangeRepository(),
   ),
 
 ];
@@ -79,6 +85,11 @@ List<SingleChildWidget> viewModels =[
   ChangeNotifierProvider<WhoCaresMeViewModel>(
     create: (context)=>WhoCaresMeViewModel(
       userRepository:Provider.of<UserRepository>(context,listen:false),
+    ),
+  ),
+  ChangeNotifierProvider<ThemeChangeViewModel>(
+    create: (context)=>ThemeChangeViewModel(
+      repository:Provider.of<ThemeChangeRepository>(context,listen:false),
     ),
   ),
 

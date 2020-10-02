@@ -6,6 +6,35 @@ const TitleFont = "Billabong";
 const RegularFont = "NotoSansJP_Medium";
 const BoldFont = "NotoSansJP_Bold";
 
+
+//テーマ
+final darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  buttonColor: Colors.white30,
+  primaryIconTheme: IconThemeData(
+    color: Colors.white,//Appbarとかbottomnavbarとかのデフォルト色
+  ),
+  iconTheme: IconThemeData(
+    color: Colors.white,//bodyで使うCardとかのボタンのデフォルト色
+  ),
+  fontFamily: RegularFont,
+);
+
+final lightTheme = ThemeData(
+  primaryColor: Colors.white,//AppBarの背景とか
+  brightness: Brightness.light,
+  buttonColor: Colors.white,
+  primaryIconTheme: IconThemeData(
+    color: Colors.black,//Appbarとかbottomnavbarとかのデフォルト色
+  ),
+  iconTheme: IconThemeData(
+    color: Colors.black,//bodyで使うCardとかのボタンのデフォルト色
+  ),
+  fontFamily: RegularFont,
+);
+
+
+
 //CSS的にfontに間することはここで設定する(viewではここから挿入するだけ)
 //Login
 const loginTitleTextStyle = TextStyle(fontFamily: TitleFont, fontSize: 48.0);
