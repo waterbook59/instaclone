@@ -33,7 +33,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+
     super.dispose();
   }
 
@@ -88,7 +88,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         Center(
                           child: InkWell(
-                            //todo プロフィール写真を変更
+                            //プロフィール写真を変更
                             onTap: () => _pickNewProfileImage(),
                             child: Text(
                               S.of(context).changeProfilePhoto,

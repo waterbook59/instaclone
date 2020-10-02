@@ -32,7 +32,7 @@ class PostCaptionPart extends StatelessWidget {
           //Heroアニメーション手順３&４ 遷移先へviewModelから取ってきたimage渡す
           onTap: () => _displayLargeImage(context, getImage),
         ),
-        //todo
+        //
         title: PostCaptionInputTextField(),
       );
     } else {

@@ -86,7 +86,7 @@ class _CommentInputPartState extends State<CommentInputPart> {
     });
   }
 
-  //todo
+  //
   _postComment(BuildContext context, Post post) async{
     final commentViewModel = Provider.of<CommentsViewModel>(context, listen: false);
 

@@ -54,7 +54,7 @@ class PostViewModel extends ChangeNotifier{
     //呼び出し元のpostUploadScreenではConsumerしているのでこの変更通知が反映される
   }
 
-  //todo
+  //
   Future<void> post() async{
   //投稿ボタン押す=>グリグリ回す
     isProcessing =true;
@@ -69,7 +69,7 @@ class PostViewModel extends ChangeNotifier{
     );
     //アップロードが終わったらグリグリ回すのストップ
     isProcessing =false;
-    //todo もう１回画像を取ってくるのでfalse??
+    // もう１回画像を取ってくるのでfalse??
     isImagePicked = false;
     notifyListeners();
   }

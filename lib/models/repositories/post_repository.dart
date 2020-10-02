@@ -42,7 +42,7 @@ class PostRepository {
     return await locationManager.getCurrentLocation();
   }
 
-  //todo getCurrentLocationをlocationManagerのメソッドにすること
+  // ---getCurrentLocationをlocationManagerのメソッドにすること----
 //  Future<Location> getCurrentLocation() async{
 //   //disiredAccuracyは情報の精度
 //  final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.low);

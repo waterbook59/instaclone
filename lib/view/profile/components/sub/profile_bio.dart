@@ -60,7 +60,7 @@ class ProfileBio extends StatelessWidget {
       ),
       child: mode == ProfileMode.MYSELF
           ? Text(S.of(context).editProfile)
-          //todo
+          //
           :  Text(isFollowing ?S.of(context).unFollow:S.of(context).follow),
     );
   }

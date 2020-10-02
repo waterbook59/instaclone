@@ -31,7 +31,7 @@ class FeedPostCommentsPart extends StatelessWidget {
             text: post.caption,
           ),
           InkWell(
-            //todo
+            //
             onTap: ()=>_openCommentsScreen(context, post, postUser),
             child: FutureBuilder(
               future: feedViewModel.getComments(post.postId),

@@ -50,7 +50,7 @@ class UserRepository {
       if (firebaseUser == null) {
         return false;
       }
-      //todo firebase上にuserがいたらdbに登録
+      // firebase上にuserがいたらdbに登録
       //まず、dbにuserがいるかどうか：いなかったら登録
       final isUserExistedInDb = await dbManager.searchUserInDb(firebaseUser);
       if (!isUserExistedInDb) {
@@ -152,7 +152,7 @@ class UserRepository {
   Future<List> getCaresMeUsers(String id, WhoCaresMeMode mode) async{
     var results = List<User>();
 
-    //todo
+    //
     switch (mode){
       case WhoCaresMeMode.LIKE:
         //いいねの場合は投稿id

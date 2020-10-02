@@ -32,7 +32,7 @@ class ProfilePage extends StatelessWidget {
                     title: Text(profileUser.inAppUserName),
                     pinned: true,
                     floating: true,
-                    //todo 設定とか
+                    // 設定とか
                     actions: [
                       ProfileSettingPart(mode: profileMode,),
                     ],
