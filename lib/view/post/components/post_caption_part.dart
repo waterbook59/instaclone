@@ -19,7 +19,7 @@ class PostCaptionPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    print('編集時に受け取ったpost：$post');
 
     if (from == PostCaptionOpenMode.FROM_POST) {//投稿時
       final postViewModel = Provider.of<PostViewModel>(context); //ここはlistenする
